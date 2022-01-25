@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylsheet" href="/css/all.css">  </link>
+        <link href="{{ mix('css/all.css') }}" rel="stylesheet">
 
         <title>Laravel</title>
 

@@ -3077,8 +3077,8 @@ p {
   
   .router-link-exact-active{
     color: #0099ff!important;
-    border-right: 2px solid #0099ff !important;
-    background-color: #eaeeea;
+    border-left: 5px solid #0099ff !important;
+    background-color: #f5f7fa;
   }
   .space{
     margin-top: 10px;

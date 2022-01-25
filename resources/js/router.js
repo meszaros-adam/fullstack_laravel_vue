@@ -4,15 +4,22 @@ import firstPage from './components/pages/my-first-vue-page'
 import newRoute from './components/pages/new-route'
 import hooks from './components/pages/basic/hooks'
 import methods from './components/pages/basic/methods'
+import home from './components/pages/home'
+import tags from './components/pages/tags'
 
 Vue.use(Router)
 
 const routes = [
     //project routes
     {
-        
+        path:'/',
+        component: home
     },
-
+    {
+        path:'/tags',
+        component: tags
+    },
+  
     //basic tutorial routes
     {
         path:'/first-page',
