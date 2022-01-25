@@ -8,6 +8,12 @@ import methods from './components/pages/basic/methods'
 Vue.use(Router)
 
 const routes = [
+    //project routes
+    {
+        
+    },
+
+    //basic tutorial routes
     {
         path:'/first-page',
         component: firstPage

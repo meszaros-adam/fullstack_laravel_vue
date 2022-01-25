@@ -3,12 +3,13 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylsheet" href="/css/all.css">  </link>
 
         <title>Laravel</title>
 
     </head>
     <body>
-        <div>
+        <!--<div>
             @if (Route::has('login'))
                 <div>
                     @auth
@@ -22,7 +23,7 @@
                     @endauth
                 </div>
             @endif
-        </div>
+        </div> -->
         <div id="app">
             <mainapp></mainapp>
         </div>        
