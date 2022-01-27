@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('app/create_tag',[App\Http\Controllers\AdminController::class, 'addTag']);
+Route::get('app/get_tags',[App\Http\Controllers\AdminController::class, 'getTag']);
+
 Route::get('/', function () {
     return view('welcome');
 });
