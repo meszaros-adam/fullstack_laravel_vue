@@ -5446,15 +5446,56 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       data: {
         tagName: ''
       },
-      modal1: false,
+      addModal: false,
+      editModal: false,
       isAdding: false,
-      tags: []
+      tags: [],
+      editData: {
+        tagName: ''
+      },
+      index: -1,
+      deleteModal: false,
+      deleteItem: {
+        id: ''
+      },
+      i: -1
     };
   },
   methods: {
@@ -5486,10 +5527,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   _this.success('Tag has been added succesfully');
 
-                  _this.modal1 = false;
+                  _this.addModal = false;
                   _this.data.tagName = '';
                 } else {
-                  _this.swr();
+                  if (res.status == 422) {
+                    if (res.data.errors.tagName) {
+                      _this.error(res.data.errors.tagName[0]);
+                    }
+                  } else {
+                    _this.swr();
+                  }
                 }
 
               case 6:
@@ -5499,35 +5546,130 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee);
       }))();
+    },
+    editTag: function editTag() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                if (!(_this2.editData.tagName.trim() == '')) {
+                  _context2.next = 2;
+                  break;
+                }
+
+                return _context2.abrupt("return", _this2.error('Tag name is required'));
+
+              case 2:
+                _context2.next = 4;
+                return _this2.callApi('post', 'app/edit_tag', _this2.editData);
+
+              case 4:
+                res = _context2.sent;
+
+                if (res.status === 200) {
+                  _this2.tags[_this2.index].tagName = _this2.editData.tagName;
+
+                  _this2.success('Tag has been edited succesfully');
+
+                  _this2.editModal = false;
+                } else {
+                  if (res.status == 422) {
+                    if (res.data.errors.tagName) {
+                      _this2.error(res.data.errors.tagName[0]);
+                    }
+                  } else {
+                    _this2.swr();
+                  }
+                }
+
+              case 6:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    showEditModal: function showEditModal(tag, i) {
+      var obj = {
+        id: tag.id
+      };
+      this.editData = obj;
+      this.editModal = true;
+      this.index = i;
+    },
+    deleteTag: function deleteTag() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
+        var res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return _this3.callApi('post', 'app/delete_tag', _this3.deleteItem);
+
+              case 2:
+                res = _context3.sent;
+
+                if (res.status === 200) {
+                  _this3.tags.splice(_this3.i, 1);
+
+                  _this3.success('Tag has been deleted successfully!');
+                } else {
+                  _this3.swr();
+                }
+
+              case 4:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    showDeleteModal: function showDeleteModal(tag, i) {
+      var obj = {
+        id: tag.id,
+        tagName: tag.tagName
+      };
+      this.deleteModal = true;
+      this.deleteItem = obj;
+      this.i = i;
     }
   },
   created: function created() {
-    var _this2 = this;
+    var _this4 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
       var res;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
-              _context2.next = 2;
-              return _this2.callApi('get', 'app/get_tags');
+              _context4.next = 2;
+              return _this4.callApi('get', 'app/get_tags');
 
             case 2:
-              res = _context2.sent;
+              res = _context4.sent;
 
               if (res.status == 200) {
-                _this2.tags = res.data;
+                _this4.tags = res.data;
               } else {
-                _this2.swr();
+                _this4.swr();
               }
 
             case 4:
             case "end":
-              return _context2.stop();
+              return _context4.stop();
           }
         }
-      }, _callee2);
+      }, _callee4);
     }))();
   }
 });
@@ -76786,7 +76928,7 @@ var render = function () {
                     {
                       on: {
                         click: function ($event) {
-                          _vm.modal1 = true
+                          _vm.addModal = true
                         },
                       },
                     },
@@ -76808,35 +76950,51 @@ var render = function () {
                     _vm._m(0),
                     _vm._v(" "),
                     _vm._l(_vm.tags, function (tag, i) {
-                      return _vm.tags.length
-                        ? _c("tr", { key: i }, [
-                            _c("td", [_vm._v(_vm._s(tag.id))]),
-                            _vm._v(" "),
-                            _c("td", { staticClass: "_table_name" }, [
-                              _vm._v(_vm._s(tag.tagName)),
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(tag.created_at))]),
+                      return _c("tr", { key: i }, [
+                        _c("td", [_vm._v(_vm._s(tag.id))]),
+                        _vm._v(" "),
+                        _c("td", { staticClass: "_table_name" }, [
+                          _vm._v(_vm._s(tag.tagName)),
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(tag.created_at))]),
+                        _vm._v(" "),
+                        _c(
+                          "td",
+                          [
+                            _c(
+                              "Button",
+                              {
+                                attrs: { type: "info", size: "small" },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.showEditModal(tag, i)
+                                  },
+                                },
+                              },
+                              [_vm._v("Edit")]
+                            ),
                             _vm._v(" "),
                             _c(
-                              "td",
-                              [
-                                _c(
-                                  "Button",
-                                  { attrs: { type: "info", size: "small" } },
-                                  [_vm._v("Edit")]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "Button",
-                                  { attrs: { type: "error", size: "small" } },
-                                  [_vm._v("Delete")]
-                                ),
-                              ],
-                              1
+                              "Button",
+                              {
+                                attrs: {
+                                  type: "error",
+                                  size: "small",
+                                  loading: tag.isDeleting,
+                                },
+                                on: {
+                                  click: function ($event) {
+                                    return _vm.showDeleteModal(tag, i)
+                                  },
+                                },
+                              },
+                              [_vm._v("Delete")]
                             ),
-                          ])
-                        : _vm._e()
+                          ],
+                          1
+                        ),
+                      ])
                     }),
                   ],
                   2
@@ -76854,11 +77012,11 @@ var render = function () {
                 closable: false,
               },
               model: {
-                value: _vm.modal1,
+                value: _vm.addModal,
                 callback: function ($$v) {
-                  _vm.modal1 = $$v
+                  _vm.addModal = $$v
                 },
-                expression: "modal1",
+                expression: "addModal",
               },
             },
             [
@@ -76883,7 +77041,7 @@ var render = function () {
                       attrs: { type: "default" },
                       on: {
                         click: function ($event) {
-                          _vm.modal1 = false
+                          _vm.addModal = false
                         },
                       },
                     },
@@ -76907,6 +77065,120 @@ var render = function () {
               ),
             ],
             1
+          ),
+          _vm._v(" "),
+          _c(
+            "Modal",
+            {
+              attrs: {
+                title: "Edit tag",
+                "mask-closable": false,
+                closable: false,
+              },
+              model: {
+                value: _vm.editModal,
+                callback: function ($$v) {
+                  _vm.editModal = $$v
+                },
+                expression: "editModal",
+              },
+            },
+            [
+              _c("Input", {
+                attrs: { placeholder: "Edit tag name" },
+                model: {
+                  value: _vm.editData.tagName,
+                  callback: function ($$v) {
+                    _vm.$set(_vm.editData, "tagName", $$v)
+                  },
+                  expression: "editData.tagName",
+                },
+              }),
+              _vm._v(" "),
+              _c(
+                "div",
+                { attrs: { slot: "footer" }, slot: "footer" },
+                [
+                  _c(
+                    "Button",
+                    {
+                      attrs: { type: "default" },
+                      on: {
+                        click: function ($event) {
+                          _vm.editModal = false
+                        },
+                      },
+                    },
+                    [_vm._v("Close")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "Button",
+                    {
+                      attrs: {
+                        type: "primary",
+                        disabled: _vm.isAdding,
+                        loading: _vm.isAdding,
+                      },
+                      on: { click: _vm.editTag },
+                    },
+                    [_vm._v(_vm._s(_vm.isAdding ? "Editing" : "Edit tag"))]
+                  ),
+                ],
+                1
+              ),
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "Modal",
+            {
+              attrs: { width: "360" },
+              model: {
+                value: _vm.deleteModal,
+                callback: function ($$v) {
+                  _vm.deleteModal = $$v
+                },
+                expression: "deleteModal",
+              },
+            },
+            [
+              _c(
+                "p",
+                {
+                  staticStyle: { color: "#f60", "text-align": "center" },
+                  attrs: { slot: "header" },
+                  slot: "header",
+                },
+                [
+                  _c("Icon", { attrs: { type: "ios-information-circle" } }),
+                  _vm._v(" "),
+                  _c("span", [_vm._v("Delete confirmation")]),
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("div", { staticStyle: { "text-align": "center" } }, [
+                _c("p", [_vm._v("Are you sure you want to delete  tag?")]),
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { attrs: { slot: "footer" }, slot: "footer" },
+                [
+                  _c(
+                    "Button",
+                    {
+                      attrs: { type: "error", size: "large", long: "" },
+                      on: { click: _vm.deleteTag },
+                    },
+                    [_vm._v("Delete")]
+                  ),
+                ],
+                1
+              ),
+            ]
           ),
         ],
         1

@@ -4,7 +4,7 @@
 			<div class="container-fluid">
 				<!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
 				<div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
-					<p class="_title0">Tags <Button @click="modal1=true"><Icon type="md-add"></Icon>Add tag</Button></p> 
+					<p class="_title0">Tags <Button @click="addModal=true"><Icon type="md-add"></Icon>Add tag</Button></p> 
 					<div class="_overflow _table_div">
 						<table class="_table">
 								<!-- TABLE TITLE -->
@@ -18,13 +18,13 @@
 
 
 								<!-- ITEMS -->
-							<tr v-for="(tag, i) in tags" :key="i" v-if="tags.length">
+							<tr v-for="(tag, i) in tags" :key="i">
 								<td>{{tag.id}}</td>
 								<td class="_table_name">{{tag.tagName}}</td>
 								<td>{{tag.created_at}}</td>
 								<td>
-									<Button type="info" size="small">Edit</Button>
-									<Button type="error" size="small">Delete</Button>
+									<Button @click="showEditModal(tag, i)" type="info" size="small">Edit</Button>
+									<Button @click="showDeleteModal(tag, i)" type="error" size="small" :loading="tag.isDeleting">Delete</Button>
 								</td>
 							</tr>
 
@@ -33,14 +33,45 @@
 				</div>
 
 				<!-- Tag adding modal -->
-				<Modal v-model="modal1" title="Add tag" :mask-closable="false" :closable="false" >
+				<Modal v-model="addModal" title="Add tag" :mask-closable="false" :closable="false" >
 					 <Input v-model="data.tagName" placeholder="Add tag name" />
 					
 					<div slot="footer">
-						<Button type="default" @click="modal1=false">Close</Button>
+						<Button type="default" @click="addModal=false">Close</Button>
 						<Button type="primary" @click="addTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add tag'}}</Button>
 					</div>
 				</Modal>
+				<!-- Tag adding modal -->
+
+				<!-- Tag editing modal -->
+				<Modal v-model="editModal" title="Edit tag" :mask-closable="false" :closable="false" >
+
+					 <Input v-model="editData.tagName" placeholder="Edit tag name" />
+					
+					<div slot="footer">
+						<Button type="default" @click="editModal=false">Close</Button>
+						<Button type="primary" @click="editTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Editing' : 'Edit tag'}}</Button>
+					</div>
+				</Modal>
+				<!-- Tag editing modal -->
+
+				<!-- Delete alert modal -->
+				<Modal v-model="deleteModal" width="360">
+					<p slot="header" style="color:#f60;text-align:center">
+						<Icon type="ios-information-circle"></Icon>
+						<span>Delete confirmation</span>
+					</p>
+					<div style="text-align:center">
+						<p>Are you sure you want to delete  tag?</p>
+	
+					</div>
+					<div slot="footer">
+						<Button type="error" size="large" long  @click="deleteTag">Delete</Button>
+					</div>
+				</Modal>
+				<!-- Delete alert modal -->
+
+				
 			</div>
 		</div>
     </div>
@@ -51,26 +82,91 @@ export default {
 	data(){
 		return{
 			data:{
-			tagName: ''
+				tagName: ''
 			},
-			modal1: false,
+			addModal: false,
+			editModal: false,
 			isAdding: false,
 			tags: [],
+			editData: {
+				tagName:''
+			},
+			index : -1,
+			deleteModal: false,
+			deleteItem: {
+				id: ''
+			},
+			i: -1
 		}
 	},
 	methods:{
 		async addTag(){
-			if(this.data.tagName.trim()=='') return this.error('Tag name is required')
+			if(this.data.tagName.trim()==''){
+			 return this.error('Tag name is required')
+			}
 			const res = await this.callApi('post', 'app/create_tag', this.data)
 			if(res.status===201){
 				this.tags.unshift(res.data)
 				this.success('Tag has been added succesfully')
-				this.modal1 = false
+				this.addModal = false
 				this.data.tagName=''
 			}else{
-				this.swr()
+				if(res.status==422){
+					if(res.data.errors.tagName){
+					this.error(res.data.errors.tagName[0])
+					}
+				}
+				else{
+					this.swr()
+				}
 			}
-		}
+		},
+		async editTag(){
+			if(this.editData.tagName.trim()==''){
+			 return this.error('Tag name is required')
+			}
+			const res = await this.callApi('post', 'app/edit_tag', this.editData)
+			if(res.status===200){
+				this.tags[this.index].tagName = this.editData.tagName
+				this.success('Tag has been edited succesfully')
+				this.editModal = false
+			}else{
+				if(res.status==422){
+					if(res.data.errors.tagName){
+					this.error(res.data.errors.tagName[0])
+					}
+				}
+				else{
+					this.swr()
+				}
+			}
+		},
+		showEditModal(tag, i){
+			let obj = {
+				id : tag.id,
+			}
+			this.editData = obj
+			this.editModal = true
+			this.index = i
+		},
+		async deleteTag(){
+				const res = await this.callApi('post', 'app/delete_tag', this.deleteItem)
+				if(res.status===200){
+					this.tags.splice(this.i, 1)
+					this.success('Tag has been deleted successfully!')
+				}else{
+					this.swr()
+				}
+		},
+		showDeleteModal(tag, i){
+			let obj = {
+				id : tag.id,
+				tagName : tag.tagName,
+			}
+			this.deleteModal= true
+			this.deleteItem=obj
+			this.i = i
+		},
 	},
 	async created(){
 		const res = await this.callApi('get', 'app/get_tags')
