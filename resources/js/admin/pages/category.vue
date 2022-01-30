@@ -4,7 +4,7 @@
 			<div class="container-fluid">
 				<!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
 				<div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
-					<p class="_title0">Tags <Button @click="addModal=true"><Icon type="md-add"></Icon>Add tag</Button></p> 
+					<p class="_title0">Category <Button @click="addModal=true"><Icon type="md-add"></Icon>Add category</Button></p> 
 					<div class="_overflow _table_div">
 						<table class="_table">
 								<!-- TABLE TITLE -->
@@ -33,12 +33,23 @@
 				</div>
 
 				<!-- Tag adding modal -->
-				<Modal v-model="addModal" title="Add tag" :mask-closable="false" :closable="false" >
-					 <Input v-model="data.tagName" placeholder="Add tag name" />
+				<Modal v-model="addModal" title="Add category" :mask-closable="false" :closable="false" >
+
+					 <Input v-model="data.tagName" placeholder="Add category name" />
+
+					 <Upload
+                        type="drag"
+						:headers="{'x-csrf-token' : token}"
+                        action="/app/upload">
+                        <div style="padding: 20px 0">
+                            <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                            <p>Click or drag files here to upload</p>
+                        </div>
+                    </Upload>
 					
 					<div slot="footer">
 						<Button type="default" @click="addModal=false">Close</Button>
-						<Button type="primary" @click="addTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add tag'}}</Button>
+						<Button type="primary" @click="addTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add category'}}</Button>
 					</div>
 				</Modal>
 				<!-- Tag adding modal -->
@@ -66,7 +77,7 @@
 	
 					</div>
 					<div slot="footer">
-						<Button type="error" size="large" long  @click="deleteTag">Delete</Button>
+						<Button type="error" size="large" long  @click="deleteTag" :loading="isDeleting">Delete</Button>
 					</div>
 				</Modal>
 				<!-- Delete alert modal -->
@@ -93,10 +104,13 @@ export default {
 			},
 			index : -1,
 			deleteModal: false,
+			isDeleting: false,
 			deleteItem: {
 				id: ''
 			},
-			i: -1
+			deletingIndex: -1,
+			token: ''
+
 		}
 	},
 	methods:{
@@ -150,13 +164,16 @@ export default {
 			this.index = i
 		},
 		async deleteTag(){
+				this.isDeleting=true
 				const res = await this.callApi('post', 'app/delete_tag', this.deleteItem)
 				if(res.status===200){
-					this.tags.splice(this.i, 1)
+					this.tags.splice(this.deletingIndex, 1)
 					this.success('Tag has been deleted successfully!')
 				}else{
 					this.swr()
 				}
+				this.deleteModal= false
+				this.isDeleting=false
 		},
 		showDeleteModal(tag, i){
 			let obj = {
@@ -165,7 +182,7 @@ export default {
 			}
 			this.deleteModal= true
 			this.deleteItem=obj
-			this.i = i
+			this.deletingIndex = i
 		},
 	},
 	async created(){
@@ -175,6 +192,7 @@ export default {
 		}else{
 			this.swr()
 		}
+		this.token=	window.Laravel.csrfToken
 	}
 	
 }

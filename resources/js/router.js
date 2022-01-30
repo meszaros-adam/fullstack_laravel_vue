@@ -4,8 +4,11 @@ import firstPage from './components/pages/my-first-vue-page'
 import newRoute from './components/pages/new-route'
 import hooks from './components/pages/basic/hooks'
 import methods from './components/pages/basic/methods'
-import home from './components/pages/home'
-import tags from './components/pages/tags'
+
+//admin project pages
+import home from './components/home'
+import tags from './admin/pages/tags'
+import category from './admin/pages/category'
 
 Vue.use(Router)
 
@@ -18,6 +21,10 @@ const routes = [
     {
         path:'/tags',
         component: tags
+    },
+    {
+        path:'/category',
+        component: category
     },
   
     //basic tutorial routes

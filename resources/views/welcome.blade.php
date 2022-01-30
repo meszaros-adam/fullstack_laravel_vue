@@ -7,6 +7,14 @@
 
         <title>Laravel</title>
 
+        <script>
+            (function(){
+                window.Laravel = {
+                    csrfToken: '{{ csrf_token() }}'
+                };
+            })();
+        </script>
+
     </head>
     <body>
         <!--<div>

@@ -17,6 +17,7 @@ Route::post('app/create_tag',[App\Http\Controllers\AdminController::class, 'addT
 Route::get('app/get_tags',[App\Http\Controllers\AdminController::class, 'getTag']);
 Route::post('app/edit_tag',[App\Http\Controllers\AdminController::class, 'editTag']);
 Route::post('app/delete_tag',[App\Http\Controllers\AdminController::class, 'deleteTag']);
+Route::post('app/upload',[App\Http\Controllers\AdminController::class, 'upload']);
 
 Route::get('/', function () {
     return view('welcome');
