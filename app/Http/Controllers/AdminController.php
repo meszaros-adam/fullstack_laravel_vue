@@ -40,6 +40,9 @@ class AdminController extends Controller
         return Tag::orderBy('id', 'desc')->get();
     }
     public function upload(Request $request){
+        $this->validate($request,[
+            'file' => 'required|mimes:jpg,jpeg,png'
+        ]);
         $picName = time().'.'.$request->file->extension();
         $request->file->move(public_path('uploads'), $picName);
         return $picName;
