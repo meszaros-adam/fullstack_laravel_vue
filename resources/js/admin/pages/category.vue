@@ -38,13 +38,14 @@
 					 <Input v-model="data.tagName" placeholder="Add category name" />
 
 					 <Upload
+					 	ref="uploads"
                         type="drag"
 						:headers="{'x-csrf-token' : token, 'X-Requested-With' : 'XMLHttpRequest'}"
 						:on-success="handleSuccess"
 						:on-error="handleError"						
 						:max-size="2048"
 						:format="['jpg', 'jpeg', 'png']"
-						:on-format-error="handleError"						
+						:on-format-error="handleFormatError"						
 						:on-exceeded-size="handleMaxSize"
                         action="/app/upload">
                         <div style="padding: 20px 0">
@@ -53,10 +54,13 @@
                         </div>
                     </Upload>
 
-					<div class="image_thumb" v-if="data.iconImage">
-						<img :src="`/uploads/${data.iconImage}`" >
-					</div>
-					
+						<div class="demo-upload-list" v-if="data.iconImage">
+								<img :src="`/uploads/${data.iconImage}`">
+								<div class="demo-upload-list-cover">
+									<Icon type="ios-trash-outline" @click="deleteImage"></Icon>
+								</div>
+						</div>
+
 					<div slot="footer">
 						<Button type="default" @click="addModal=false">Close</Button>
 						<Button type="primary" @click="addTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add category'}}</Button>
@@ -125,76 +129,6 @@ export default {
 		}
 	},
 	methods:{
-		async addTag(){
-			if(this.data.tagName.trim()==''){
-			 return this.error('Tag name is required')
-			}
-			const res = await this.callApi('post', 'app/create_tag', this.data)
-			if(res.status===201){
-				this.tags.unshift(res.data)
-				this.success('Tag has been added succesfully')
-				this.addModal = false
-				this.data.tagName=''
-			}else{
-				if(res.status==422){
-					if(res.data.errors.tagName){
-					this.error(res.data.errors.tagName[0])
-					}
-				}
-				else{
-					this.swr()
-				}
-			}
-		},
-		async editTag(){
-			if(this.editData.tagName.trim()==''){
-			 return this.error('Tag name is required')
-			}
-			const res = await this.callApi('post', 'app/edit_tag', this.editData)
-			if(res.status===200){
-				this.tags[this.index].tagName = this.editData.tagName
-				this.success('Tag has been edited succesfully')
-				this.editModal = false
-			}else{
-				if(res.status==422){
-					if(res.data.errors.tagName){
-					this.error(res.data.errors.tagName[0])
-					}
-				}
-				else{
-					this.swr()
-				}
-			}
-		},
-		showEditModal(tag, i){
-			let obj = {
-				id : tag.id,
-			}
-			this.editData = obj
-			this.editModal = true
-			this.index = i
-		},
-		async deleteTag(){
-				this.isDeleting=true
-				const res = await this.callApi('post', 'app/delete_tag', this.deleteItem)
-				if(res.status===200){
-					this.tags.splice(this.deletingIndex, 1)
-					this.success('Tag has been deleted successfully!')
-				}else{
-					this.swr()
-				}
-				this.deleteModal= false
-				this.isDeleting=false
-		},
-		showDeleteModal(tag, i){
-			let obj = {
-				id : tag.id,
-				tagName : tag.tagName,
-			}
-			this.deleteModal= true
-			this.deleteItem=obj
-			this.deletingIndex = i
-		},
 		handleSuccess (res, file){
 			this.data.iconImage = res
 		},
@@ -216,6 +150,16 @@ export default {
 				desc: 'File ' + file.name + ' is too large, no more than 2M'
 			})
 		},
+		async deleteImage(){
+			let image = this.data.iconImage
+			this.data.iconImage = ''
+			this.$refs.uploads.clearFiles()
+			resp = await this.callApi('post', 'app/delete_image', {imageName: image})
+			if(res.status!=200){
+				this.data.iconImage = image
+				this.swr()
+			}
+		},
 
 	},
 	async created(){
@@ -227,6 +171,44 @@ export default {
 		}
 		this.token=	window.Laravel.csrfToken
 	}
-	
 }
 </script>
+
+<style>
+	  .demo-upload-list{
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        line-height: 60px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        overflow: hidden;
+        background: #fff;
+        position: relative;
+        box-shadow: 0 1px 1px rgba(0,0,0,.2);
+        margin-right: 4px;
+    }
+    .demo-upload-list img{
+        width: 100%;
+        height: 100%;
+    }
+    .demo-upload-list-cover{
+        display: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,.6);
+    }
+    .demo-upload-list:hover .demo-upload-list-cover{
+        display: block;
+    }
+    .demo-upload-list-cover i{
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        margin: 0 2px;
+    }
+</style>
