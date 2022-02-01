@@ -10,7 +10,8 @@
 								<!-- TABLE TITLE -->
 							<tr>
 								<th>ID</th>
-								<th>Tag name</th>
+								<th>Icon image</th>
+								<th>Category name</th>
 								<th>Created at</th>
 								<th>Action</th>
 							</tr>
@@ -18,13 +19,16 @@
 
 
 								<!-- ITEMS -->
-							<tr v-for="(tag, i) in tags" :key="i">
-								<td>{{tag.id}}</td>
-								<td class="_table_name">{{tag.tagName}}</td>
-								<td>{{tag.created_at}}</td>
+							<tr v-for="(category, i) in categoryList" :key="i" v-if="categoryList.length">
+								<td>{{category.id}}</td>
+								<td class="table_image">
+									<img :src="category.iconImage">
+								</td>
+								<td class="_table_name">{{category.categoryName}}</td>
+								<td>{{category.created_at}}</td>
 								<td>
-									<Button @click="showEditModal(tag, i)" type="info" size="small">Edit</Button>
-									<Button @click="showDeleteModal(tag, i)" type="error" size="small" :loading="tag.isDeleting">Delete</Button>
+									<Button @click="showEditModal(category, i)" type="info" size="small">Edit</Button>
+									<Button @click="showDeleteModal(category, i)" type="error" size="small" :loading="category.isDeleting">Delete</Button>
 								</td>
 							</tr>
 
@@ -32,10 +36,10 @@
 					</div>
 				</div>
 
-				<!-- Tag adding modal -->
+				<!-- category adding modal -->
 				<Modal v-model="addModal" title="Add category" :mask-closable="false" :closable="false" >
 
-					 <Input v-model="data.tagName" placeholder="Add category name" />
+					 <Input v-model="data.categoryName" placeholder="Add category name" />
 
 					 <Upload
 					 	ref="uploads"
@@ -63,22 +67,22 @@
 
 					<div slot="footer">
 						<Button type="default" @click="addModal=false">Close</Button>
-						<Button type="primary" @click="addTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add category'}}</Button>
+						<Button type="primary" @click="addCategory" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add category'}}</Button>
 					</div>
 				</Modal>
-				<!-- Tag adding modal -->
+				<!-- category adding modal -->
 
-				<!-- Tag editing modal -->
-				<Modal v-model="editModal" title="Edit tag" :mask-closable="false" :closable="false" >
+				<!-- category editing modal -->
+				<Modal v-model="editModal" title="Edit category" :mask-closable="false" :closable="false" >
 
-					 <Input v-model="editData.tagName" placeholder="Edit tag name" />
+					 <Input v-model="editData.categoryName" placeholder="Edit category name" />
 					
 					<div slot="footer">
 						<Button type="default" @click="editModal=false">Close</Button>
-						<Button type="primary" @click="editTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Editing' : 'Edit tag'}}</Button>
+						<Button type="primary" @click="editcategory" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Editing' : 'Edit category'}}</Button>
 					</div>
 				</Modal>
-				<!-- Tag editing modal -->
+				<!-- category editing modal -->
 
 				<!-- Delete alert modal -->
 				<Modal v-model="deleteModal" width="360">
@@ -87,11 +91,11 @@
 						<span>Delete confirmation</span>
 					</p>
 					<div style="text-align:center">
-						<p>Are you sure you want to delete  tag?</p>
+						<p>Are you sure you want to delete  category?</p>
 	
 					</div>
 					<div slot="footer">
-						<Button type="error" size="large" long  @click="deleteTag" :loading="isDeleting">Delete</Button>
+						<Button type="error" size="large" long  @click="deletecategory" :loading="isDeleting">Delete</Button>
 					</div>
 				</Modal>
 				<!-- Delete alert modal -->
@@ -113,9 +117,9 @@ export default {
 			addModal: false,
 			editModal: false,
 			isAdding: false,
-			tags: [],
+			categoryList: [],
 			editData: {
-				tagName:''
+				categoryName:''
 			},
 			index : -1,
 			deleteModal: false,
@@ -160,12 +164,58 @@ export default {
 				this.swr()
 			}
 		},
-
+		async addCategory(){
+			if(this.data.categoryName.trim()=='') return this.error('Category name is required')
+			if(this.data.iconImage.trim()=='') return this.error('Icon image is required')
+			this.isAdding=true
+			this.data.iconImage = `/uploads/${this.data.iconImage}`
+			const res = await this.callApi('post', 'app/create_category', this.data)
+			if(res.status===201){
+				this.categoryList.unshift(res.data)
+				this.success('Category has been added succesfully')
+				this.addModal = false
+				this.data.categoryName=''
+				this.data.iconImage=''
+			}else{
+				if(res.status==422){
+					if(res.data.errors.categoryName){
+					this.error(res.data.errors.categoryName[0])
+					}
+					if(res.data.errors.iconImage){
+					this.error(res.data.errors.iconImage[0])
+					}
+				}
+				else{
+					this.swr()
+				}
+			}
+			this.isAdding=false
+			this.$refs.uploads.clearFiles()
+		},
+		async editCategory(){
+			if(this.editData.categoryName.trim()=='') return this.error('Category name is required')
+			
+			const res = await this.callApi('post', 'app/edit_category', this.editData)
+			if(res.status===200){
+				this.Categorys[this.index].CategoryName = this.editData.CategoryName
+				this.success('Category has been edited succesfully')
+				this.editModal = false
+			}else{
+				if(res.status==422){
+					if(res.data.errors.CategoryName){
+					this.error(res.data.errors.CategoryName[0])
+					}
+				}
+				else{
+					this.swr()
+				}
+			}
+		},
 	},
 	async created(){
-		const res = await this.callApi('get', 'app/get_tags')
+		const res = await this.callApi('get', 'app/get_category')
 		if(res.status==200){
-			this.tags = res.data
+			this.categoryList = res.data
 		}else{
 			this.swr()
 		}
@@ -211,4 +261,9 @@ export default {
         cursor: pointer;
         margin: 0 2px;
     }
+	.table_image img{
+		max-width: 40px;
+		max-height: 40px;
+
+	}
 </style>

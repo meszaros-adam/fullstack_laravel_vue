@@ -5385,6 +5385,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -5395,9 +5399,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       addModal: false,
       editModal: false,
       isAdding: false,
-      tags: [],
+      categoryList: [],
       editData: {
-        tagName: ''
+        categoryName: ''
       },
       index: -1,
       deleteModal: false,
@@ -5466,37 +5470,151 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee);
       }))();
+    },
+    addCategory: function addCategory() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        var res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                if (!(_this2.data.categoryName.trim() == '')) {
+                  _context2.next = 2;
+                  break;
+                }
+
+                return _context2.abrupt("return", _this2.error('Category name is required'));
+
+              case 2:
+                if (!(_this2.data.iconImage.trim() == '')) {
+                  _context2.next = 4;
+                  break;
+                }
+
+                return _context2.abrupt("return", _this2.error('Icon image is required'));
+
+              case 4:
+                _this2.isAdding = true;
+                _this2.data.iconImage = "/uploads/".concat(_this2.data.iconImage);
+                _context2.next = 8;
+                return _this2.callApi('post', 'app/create_category', _this2.data);
+
+              case 8:
+                res = _context2.sent;
+
+                if (res.status === 201) {
+                  _this2.categoryList.unshift(res.data);
+
+                  _this2.success('Category has been added succesfully');
+
+                  _this2.addModal = false;
+                  _this2.data.categoryName = '';
+                  _this2.data.iconImage = '';
+                } else {
+                  if (res.status == 422) {
+                    if (res.data.errors.categoryName) {
+                      _this2.error(res.data.errors.categoryName[0]);
+                    }
+
+                    if (res.data.errors.iconImage) {
+                      _this2.error(res.data.errors.iconImage[0]);
+                    }
+                  } else {
+                    _this2.swr();
+                  }
+                }
+
+                _this2.isAdding = false;
+
+                _this2.$refs.uploads.clearFiles();
+
+              case 12:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    editCategory: function editCategory() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
+        var res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                if (!(_this3.editData.categoryName.trim() == '')) {
+                  _context3.next = 2;
+                  break;
+                }
+
+                return _context3.abrupt("return", _this3.error('Category name is required'));
+
+              case 2:
+                _context3.next = 4;
+                return _this3.callApi('post', 'app/edit_category', _this3.editData);
+
+              case 4:
+                res = _context3.sent;
+
+                if (res.status === 200) {
+                  _this3.Categorys[_this3.index].CategoryName = _this3.editData.CategoryName;
+
+                  _this3.success('Category has been edited succesfully');
+
+                  _this3.editModal = false;
+                } else {
+                  if (res.status == 422) {
+                    if (res.data.errors.CategoryName) {
+                      _this3.error(res.data.errors.CategoryName[0]);
+                    }
+                  } else {
+                    _this3.swr();
+                  }
+                }
+
+              case 6:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
     }
   },
   created: function created() {
-    var _this2 = this;
+    var _this4 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
       var res;
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
-              _context2.next = 2;
-              return _this2.callApi('get', 'app/get_tags');
+              _context4.next = 2;
+              return _this4.callApi('get', 'app/get_category');
 
             case 2:
-              res = _context2.sent;
+              res = _context4.sent;
 
               if (res.status == 200) {
-                _this2.tags = res.data;
+                _this4.categoryList = res.data;
               } else {
-                _this2.swr();
+                _this4.swr();
               }
 
-              _this2.token = window.Laravel.csrfToken;
+              _this4.token = window.Laravel.csrfToken;
 
             case 5:
             case "end":
-              return _context2.stop();
+              return _context4.stop();
           }
         }
-      }, _callee2);
+      }, _callee4);
     }))();
   }
 });
@@ -11238,7 +11356,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.demo-upload-list{\n        display: inline-block;\n        width: 60px;\n        height: 60px;\n        text-align: center;\n        line-height: 60px;\n        border: 1px solid transparent;\n        border-radius: 4px;\n        overflow: hidden;\n        background: #fff;\n        position: relative;\n        box-shadow: 0 1px 1px rgba(0,0,0,.2);\n        margin-right: 4px;\n}\n.demo-upload-list img{\n        width: 100%;\n        height: 100%;\n}\n.demo-upload-list-cover{\n        display: none;\n        position: absolute;\n        top: 0;\n        bottom: 0;\n        left: 0;\n        right: 0;\n        background: rgba(0,0,0,.6);\n}\n.demo-upload-list:hover .demo-upload-list-cover{\n        display: block;\n}\n.demo-upload-list-cover i{\n        color: #fff;\n        font-size: 20px;\n        cursor: pointer;\n        margin: 0 2px;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.demo-upload-list{\n        display: inline-block;\n        width: 60px;\n        height: 60px;\n        text-align: center;\n        line-height: 60px;\n        border: 1px solid transparent;\n        border-radius: 4px;\n        overflow: hidden;\n        background: #fff;\n        position: relative;\n        box-shadow: 0 1px 1px rgba(0,0,0,.2);\n        margin-right: 4px;\n}\n.demo-upload-list img{\n        width: 100%;\n        height: 100%;\n}\n.demo-upload-list-cover{\n        display: none;\n        position: absolute;\n        top: 0;\n        bottom: 0;\n        left: 0;\n        right: 0;\n        background: rgba(0,0,0,.6);\n}\n.demo-upload-list:hover .demo-upload-list-cover{\n        display: block;\n}\n.demo-upload-list-cover i{\n        color: #fff;\n        font-size: 20px;\n        cursor: pointer;\n        margin: 0 2px;\n}\n.table_image img{\n\t\tmax-width: 40px;\n\t\tmax-height: 40px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -76570,52 +76688,58 @@ var render = function () {
                   [
                     _vm._m(0),
                     _vm._v(" "),
-                    _vm._l(_vm.tags, function (tag, i) {
-                      return _c("tr", { key: i }, [
-                        _c("td", [_vm._v(_vm._s(tag.id))]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "_table_name" }, [
-                          _vm._v(_vm._s(tag.tagName)),
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(tag.created_at))]),
-                        _vm._v(" "),
-                        _c(
-                          "td",
-                          [
-                            _c(
-                              "Button",
-                              {
-                                attrs: { type: "info", size: "small" },
-                                on: {
-                                  click: function ($event) {
-                                    return _vm.showEditModal(tag, i)
-                                  },
-                                },
-                              },
-                              [_vm._v("Edit")]
-                            ),
+                    _vm._l(_vm.categoryList, function (category, i) {
+                      return _vm.categoryList.length
+                        ? _c("tr", { key: i }, [
+                            _c("td", [_vm._v(_vm._s(category.id))]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "table_image" }, [
+                              _c("img", { attrs: { src: category.iconImage } }),
+                            ]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "_table_name" }, [
+                              _vm._v(_vm._s(category.categoryName)),
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(category.created_at))]),
                             _vm._v(" "),
                             _c(
-                              "Button",
-                              {
-                                attrs: {
-                                  type: "error",
-                                  size: "small",
-                                  loading: tag.isDeleting,
-                                },
-                                on: {
-                                  click: function ($event) {
-                                    return _vm.showDeleteModal(tag, i)
+                              "td",
+                              [
+                                _c(
+                                  "Button",
+                                  {
+                                    attrs: { type: "info", size: "small" },
+                                    on: {
+                                      click: function ($event) {
+                                        return _vm.showEditModal(category, i)
+                                      },
+                                    },
                                   },
-                                },
-                              },
-                              [_vm._v("Delete")]
+                                  [_vm._v("Edit")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "Button",
+                                  {
+                                    attrs: {
+                                      type: "error",
+                                      size: "small",
+                                      loading: category.isDeleting,
+                                    },
+                                    on: {
+                                      click: function ($event) {
+                                        return _vm.showDeleteModal(category, i)
+                                      },
+                                    },
+                                  },
+                                  [_vm._v("Delete")]
+                                ),
+                              ],
+                              1
                             ),
-                          ],
-                          1
-                        ),
-                      ])
+                          ])
+                        : _vm._e()
                     }),
                   ],
                   2
@@ -76644,11 +76768,11 @@ var render = function () {
               _c("Input", {
                 attrs: { placeholder: "Add category name" },
                 model: {
-                  value: _vm.data.tagName,
+                  value: _vm.data.categoryName,
                   callback: function ($$v) {
-                    _vm.$set(_vm.data, "tagName", $$v)
+                    _vm.$set(_vm.data, "categoryName", $$v)
                   },
-                  expression: "data.tagName",
+                  expression: "data.categoryName",
                 },
               }),
               _vm._v(" "),
@@ -76733,7 +76857,7 @@ var render = function () {
                         disabled: _vm.isAdding,
                         loading: _vm.isAdding,
                       },
-                      on: { click: _vm.addTag },
+                      on: { click: _vm.addCategory },
                     },
                     [_vm._v(_vm._s(_vm.isAdding ? "Adding" : "Add category"))]
                   ),
@@ -76748,7 +76872,7 @@ var render = function () {
             "Modal",
             {
               attrs: {
-                title: "Edit tag",
+                title: "Edit category",
                 "mask-closable": false,
                 closable: false,
               },
@@ -76762,13 +76886,13 @@ var render = function () {
             },
             [
               _c("Input", {
-                attrs: { placeholder: "Edit tag name" },
+                attrs: { placeholder: "Edit category name" },
                 model: {
-                  value: _vm.editData.tagName,
+                  value: _vm.editData.categoryName,
                   callback: function ($$v) {
-                    _vm.$set(_vm.editData, "tagName", $$v)
+                    _vm.$set(_vm.editData, "categoryName", $$v)
                   },
-                  expression: "editData.tagName",
+                  expression: "editData.categoryName",
                 },
               }),
               _vm._v(" "),
@@ -76797,9 +76921,9 @@ var render = function () {
                         disabled: _vm.isAdding,
                         loading: _vm.isAdding,
                       },
-                      on: { click: _vm.editTag },
+                      on: { click: _vm.editcategory },
                     },
-                    [_vm._v(_vm._s(_vm.isAdding ? "Editing" : "Edit tag"))]
+                    [_vm._v(_vm._s(_vm.isAdding ? "Editing" : "Edit category"))]
                   ),
                 ],
                 1
@@ -76837,7 +76961,7 @@ var render = function () {
               ),
               _vm._v(" "),
               _c("div", { staticStyle: { "text-align": "center" } }, [
-                _c("p", [_vm._v("Are you sure you want to delete  tag?")]),
+                _c("p", [_vm._v("Are you sure you want to delete  category?")]),
               ]),
               _vm._v(" "),
               _c(
@@ -76853,7 +76977,7 @@ var render = function () {
                         long: "",
                         loading: _vm.isDeleting,
                       },
-                      on: { click: _vm.deleteTag },
+                      on: { click: _vm.deletecategory },
                     },
                     [_vm._v("Delete")]
                   ),
@@ -76876,7 +77000,9 @@ var staticRenderFns = [
     return _c("tr", [
       _c("th", [_vm._v("ID")]),
       _vm._v(" "),
-      _c("th", [_vm._v("Tag name")]),
+      _c("th", [_vm._v("Icon image")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Category name")]),
       _vm._v(" "),
       _c("th", [_vm._v("Created at")]),
       _vm._v(" "),
@@ -76951,51 +77077,53 @@ var render = function () {
                     _vm._m(0),
                     _vm._v(" "),
                     _vm._l(_vm.tags, function (tag, i) {
-                      return _c("tr", { key: i }, [
-                        _c("td", [_vm._v(_vm._s(tag.id))]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "_table_name" }, [
-                          _vm._v(_vm._s(tag.tagName)),
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [_vm._v(_vm._s(tag.created_at))]),
-                        _vm._v(" "),
-                        _c(
-                          "td",
-                          [
-                            _c(
-                              "Button",
-                              {
-                                attrs: { type: "info", size: "small" },
-                                on: {
-                                  click: function ($event) {
-                                    return _vm.showEditModal(tag, i)
-                                  },
-                                },
-                              },
-                              [_vm._v("Edit")]
-                            ),
+                      return _vm.tags.length
+                        ? _c("tr", { key: i }, [
+                            _c("td", [_vm._v(_vm._s(tag.id))]),
+                            _vm._v(" "),
+                            _c("td", { staticClass: "_table_name" }, [
+                              _vm._v(_vm._s(tag.tagName)),
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(tag.created_at))]),
                             _vm._v(" "),
                             _c(
-                              "Button",
-                              {
-                                attrs: {
-                                  type: "error",
-                                  size: "small",
-                                  loading: tag.isDeleting,
-                                },
-                                on: {
-                                  click: function ($event) {
-                                    return _vm.showDeleteModal(tag, i)
+                              "td",
+                              [
+                                _c(
+                                  "Button",
+                                  {
+                                    attrs: { type: "info", size: "small" },
+                                    on: {
+                                      click: function ($event) {
+                                        return _vm.showEditModal(tag, i)
+                                      },
+                                    },
                                   },
-                                },
-                              },
-                              [_vm._v("Delete")]
+                                  [_vm._v("Edit")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "Button",
+                                  {
+                                    attrs: {
+                                      type: "error",
+                                      size: "small",
+                                      loading: tag.isDeleting,
+                                    },
+                                    on: {
+                                      click: function ($event) {
+                                        return _vm.showDeleteModal(tag, i)
+                                      },
+                                    },
+                                  },
+                                  [_vm._v("Delete")]
+                                ),
+                              ],
+                              1
                             ),
-                          ],
-                          1
-                        ),
-                      ])
+                          ])
+                        : _vm._e()
                     }),
                   ],
                   2

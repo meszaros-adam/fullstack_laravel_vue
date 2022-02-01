@@ -18,7 +18,7 @@
 
 
 								<!-- ITEMS -->
-							<tr v-for="(tag, i) in tags" :key="i">
+							<tr v-for="(tag, i) in tags" :key="i" v-if="tags.length">
 								<td>{{tag.id}}</td>
 								<td class="_table_name">{{tag.tagName}}</td>
 								<td>{{tag.created_at}}</td>
@@ -125,9 +125,8 @@ export default {
 			this.isAdding=false
 		},
 		async editTag(){
-			if(this.editData.tagName.trim()==''){
-			 return this.error('Tag name is required')
-			}
+			if(this.editData.tagName.trim()=='') return this.error('Tag name is required')
+
 			const res = await this.callApi('post', 'app/edit_tag', this.editData)
 			if(res.status===200){
 				this.tags[this.index].tagName = this.editData.tagName
