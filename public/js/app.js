@@ -5389,6 +5389,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -5401,20 +5426,31 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       isAdding: false,
       categoryList: [],
       editData: {
+        iconImage: '',
         categoryName: ''
       },
-      index: -1,
+      editIndex: -1,
       deleteModal: false,
       isDeleting: false,
       deleteItem: {
         id: ''
       },
-      deletingIndex: -1,
-      token: ''
+      deleteIndex: -1,
+      token: '',
+      showEditUpload: false,
+      isEditing: false,
+      //for HandleSucess function.
+      isEditingItem: false
     };
   },
   methods: {
     handleSuccess: function handleSuccess(res, file) {
+      res = "/uploads/".concat(res);
+
+      if (this.isEditingItem) {
+        this.editData.iconImage = res;
+      }
+
       this.data.iconImage = res;
     },
     handleError: function handleError(res, file) {
@@ -5436,25 +5472,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       });
     },
     deleteImage: function deleteImage() {
-      var _this = this;
+      var _arguments = arguments,
+          _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        var image;
+        var isAdd, image;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                image = _this.data.iconImage;
-                _this.data.iconImage = '';
+                isAdd = _arguments.length > 0 && _arguments[0] !== undefined ? _arguments[0] : true;
 
-                _this.$refs.uploads.clearFiles();
+                if (!isAdd) {
+                  //for editing
+                  _this.showEditUpload = true;
+                  image = _this.editData.iconImage;
+                  _this.editData.iconImage = '';
 
-                _context.next = 5;
+                  _this.$refs.editDataUpload.clearFiles();
+                } else {
+                  image = _this.data.iconImage;
+                  _this.data.iconImage = '';
+
+                  _this.$refs.uploads.clearFiles();
+                }
+
+                _context.next = 4;
                 return _this.callApi('post', 'app/delete_image', {
                   imageName: image
                 });
 
-              case 5:
+              case 4:
                 resp = _context.sent;
 
                 if (res.status != 200) {
@@ -5463,7 +5511,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this.swr();
                 }
 
-              case 7:
+              case 6:
               case "end":
                 return _context.stop();
             }
@@ -5497,7 +5545,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 4:
                 _this2.isAdding = true;
-                _this2.data.iconImage = "/uploads/".concat(_this2.data.iconImage);
+                _this2.data.iconImage = "".concat(_this2.data.iconImage);
                 _context2.next = 8;
                 return _this2.callApi('post', 'app/create_category', _this2.data);
 
@@ -5555,35 +5603,56 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context3.abrupt("return", _this3.error('Category name is required'));
 
               case 2:
-                _context3.next = 4;
-                return _this3.callApi('post', 'app/edit_category', _this3.editData);
+                if (!(_this3.editData.iconImage.trim() == '')) {
+                  _context3.next = 4;
+                  break;
+                }
+
+                return _context3.abrupt("return", _this3.error('Icon image is required'));
 
               case 4:
+                _this3.isEditing = true;
+                _context3.next = 7;
+                return _this3.callApi('post', 'app/edit_category', _this3.editData);
+
+              case 7:
                 res = _context3.sent;
 
                 if (res.status === 200) {
-                  _this3.Categorys[_this3.index].CategoryName = _this3.editData.CategoryName;
+                  _this3.categoryList[_this3.editIndex] = _this3.editData;
 
-                  _this3.success('Category has been edited succesfully');
+                  _this3.success('Tag has been edited succesfully');
 
                   _this3.editModal = false;
                 } else {
                   if (res.status == 422) {
-                    if (res.data.errors.CategoryName) {
-                      _this3.error(res.data.errors.CategoryName[0]);
+                    if (res.data.errors.categoryName) {
+                      _this3.error(res.data.errors.categoryName[0]);
                     }
                   } else {
                     _this3.swr();
                   }
                 }
 
-              case 6:
+                _this3.isEditing = false;
+
+              case 10:
               case "end":
                 return _context3.stop();
             }
           }
         }, _callee3);
       }))();
+    },
+    showEditModal: function showEditModal(category, index) {
+      this.editData = category;
+      this.editModal = true;
+      this.isEditingItem = true;
+      this.editIndex = index;
+    },
+    closeEditModal: function closeEditModal() {
+      this.isEditingItem = false;
+      this.editModal = false;
     }
   },
   created: function created() {
@@ -5729,6 +5798,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       editModal: false,
       isAdding: false,
       tags: [],
+      isEditing: false,
       editData: {
         tagName: ''
       },
@@ -5811,10 +5881,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context2.abrupt("return", _this2.error('Tag name is required'));
 
               case 2:
-                _context2.next = 4;
+                _this2.isEditing = true;
+                _context2.next = 5;
                 return _this2.callApi('post', 'app/edit_tag', _this2.editData);
 
-              case 4:
+              case 5:
                 res = _context2.sent;
 
                 if (res.status === 200) {
@@ -5833,7 +5904,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   }
                 }
 
-              case 6:
+                _this2.isEditing = false;
+
+              case 8:
               case "end":
                 return _context2.stop();
             }
@@ -5845,7 +5918,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var obj = {
         id: tag.id
       };
-      this.editData = obj;
+      this.editData = tag;
       this.editModal = true;
       this.index = i;
     },
@@ -76814,9 +76887,7 @@ var render = function () {
               _vm._v(" "),
               _vm.data.iconImage
                 ? _c("div", { staticClass: "demo-upload-list" }, [
-                    _c("img", {
-                      attrs: { src: "/uploads/" + _vm.data.iconImage },
-                    }),
+                    _c("img", { attrs: { src: "" + _vm.data.iconImage } }),
                     _vm._v(" "),
                     _c(
                       "div",
@@ -76843,6 +76914,7 @@ var render = function () {
                       on: {
                         click: function ($event) {
                           _vm.addModal = false
+                          _vm.deleteImage()
                         },
                       },
                     },
@@ -76897,6 +76969,72 @@ var render = function () {
               }),
               _vm._v(" "),
               _c(
+                "Upload",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.showEditUpload,
+                      expression: "showEditUpload",
+                    },
+                  ],
+                  ref: "editDataUpload",
+                  attrs: {
+                    type: "drag",
+                    headers: {
+                      "x-csrf-token": _vm.token,
+                      "X-Requested-With": "XMLHttpRequest",
+                    },
+                    "on-success": _vm.handleSuccess,
+                    "on-error": _vm.handleError,
+                    "max-size": 2048,
+                    format: ["jpg", "jpeg", "png"],
+                    "on-format-error": _vm.handleFormatError,
+                    "on-exceeded-size": _vm.handleMaxSize,
+                    action: "/app/upload",
+                  },
+                },
+                [
+                  _c(
+                    "div",
+                    { staticStyle: { padding: "20px 0" } },
+                    [
+                      _c("Icon", {
+                        staticStyle: { color: "#3399ff" },
+                        attrs: { type: "ios-cloud-upload", size: "52" },
+                      }),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("Click or drag files here to upload")]),
+                    ],
+                    1
+                  ),
+                ]
+              ),
+              _vm._v(" "),
+              _vm.editData.iconImage
+                ? _c("div", { staticClass: "demo-upload-list" }, [
+                    _c("img", { attrs: { src: "" + _vm.editData.iconImage } }),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "demo-upload-list-cover" },
+                      [
+                        _c("Icon", {
+                          attrs: { type: "ios-trash-outline" },
+                          on: {
+                            click: function ($event) {
+                              return _vm.deleteImage(false)
+                            },
+                          },
+                        }),
+                      ],
+                      1
+                    ),
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
                 "div",
                 { attrs: { slot: "footer" }, slot: "footer" },
                 [
@@ -76904,11 +77042,7 @@ var render = function () {
                     "Button",
                     {
                       attrs: { type: "default" },
-                      on: {
-                        click: function ($event) {
-                          _vm.editModal = false
-                        },
-                      },
+                      on: { click: _vm.closeEditModal },
                     },
                     [_vm._v("Close")]
                   ),
@@ -76918,12 +77052,16 @@ var render = function () {
                     {
                       attrs: {
                         type: "primary",
-                        disabled: _vm.isAdding,
-                        loading: _vm.isAdding,
+                        disabled: _vm.isEditing,
+                        loading: _vm.isEditing,
                       },
-                      on: { click: _vm.editcategory },
+                      on: { click: _vm.editCategory },
                     },
-                    [_vm._v(_vm._s(_vm.isAdding ? "Editing" : "Edit category"))]
+                    [
+                      _vm._v(
+                        _vm._s(_vm.isEditing ? "Editing" : "Edit category")
+                      ),
+                    ]
                   ),
                 ],
                 1
@@ -77246,12 +77384,12 @@ var render = function () {
                     {
                       attrs: {
                         type: "primary",
-                        disabled: _vm.isAdding,
-                        loading: _vm.isAdding,
+                        disabled: _vm.isEditing,
+                        loading: _vm.isEditing,
                       },
                       on: { click: _vm.editTag },
                     },
-                    [_vm._v(_vm._s(_vm.isAdding ? "Editing" : "Edit tag"))]
+                    [_vm._v(_vm._s(_vm.isEditing ? "Editing" : "Edit tag"))]
                   ),
                 ],
                 1

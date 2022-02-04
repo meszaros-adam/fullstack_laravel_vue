@@ -75,5 +75,16 @@ class AdminController extends Controller
     public function getCategory(){
         return Category::orderBy('id', 'desc')->get();
     }
+    public function editCategory(Request $request){
+        $validated = $request->validate([
+            'categoryName' => 'required',
+            'iconImage' => 'required',
+        ]);
 
+        return Category::where('id', $request->id)->update([
+            'categoryName' => $request->categoryName,
+            'iconImage' => $request->iconImage,
+
+        ]);
+    }
 }

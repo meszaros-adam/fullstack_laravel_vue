@@ -50,7 +50,7 @@
 					
 					<div slot="footer">
 						<Button type="default" @click="editModal=false">Close</Button>
-						<Button type="primary" @click="editTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Editing' : 'Edit tag'}}</Button>
+						<Button type="primary" @click="editTag" :disabled="isEditing" :loading="isEditing">{{isEditing ? 'Editing' : 'Edit tag'}}</Button>
 					</div>
 				</Modal>
 				<!-- Tag editing modal -->
@@ -88,6 +88,7 @@ export default {
 			editModal: false,
 			isAdding: false,
 			tags: [],
+			isEditing: false,
 			editData: {
 				tagName:''
 			},
@@ -126,7 +127,7 @@ export default {
 		},
 		async editTag(){
 			if(this.editData.tagName.trim()=='') return this.error('Tag name is required')
-
+			this.isEditing = true
 			const res = await this.callApi('post', 'app/edit_tag', this.editData)
 			if(res.status===200){
 				this.tags[this.index].tagName = this.editData.tagName
@@ -142,12 +143,10 @@ export default {
 					this.swr()
 				}
 			}
+			this.isEditing = false
 		},
 		showEditModal(tag, i){
-			let obj = {
-				id : tag.id,
-			}
-			this.editData = obj
+			this.editData = tag
 			this.editModal = true
 			this.index = i
 		},

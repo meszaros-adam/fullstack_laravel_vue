@@ -21,6 +21,7 @@ Route::post('app/upload',[App\Http\Controllers\AdminController::class, 'upload']
 Route::post('app/delete_image',[App\Http\Controllers\AdminController::class, 'deleteImage']);
 Route::post('app/create_category',[App\Http\Controllers\AdminController::class, 'addCategory']);
 Route::get('app/get_category',[App\Http\Controllers\AdminController::class, 'getCategory']);
+Route::post('app/edit_category',[App\Http\Controllers\AdminController::class, 'editCategory']);
 
 Route::get('/', function () {
     return view('welcome');
