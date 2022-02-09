@@ -6128,6 +6128,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _component_A__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./component_A */ "./resources/js/vuex/component_A.vue");
 /* harmony import */ var _component_B__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./component_B */ "./resources/js/vuex/component_B.vue");
 /* harmony import */ var _component_C__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./component_C */ "./resources/js/vuex/component_C.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -6141,10 +6148,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+
 
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {};
+  },
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapGetters)({
+    counter: 'getCounter'
+  })),
   components: {
     componentA: _component_A__WEBPACK_IMPORTED_MODULE_0__["default"],
     componentB: _component_B__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -6152,7 +6166,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     changeCounter: function changeCounter() {
-      this.$store.commit('changeTheCounter', 1);
+      this.$store.dispatch('changeCounterAction', 1); //this.$store.commit('changeTheCounter', 1)
     }
   }
 });
@@ -6416,9 +6430,20 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1_
   state: {
     counter: 1000
   },
+  getters: {
+    getCounter: function getCounter(state) {
+      return state.counter;
+    }
+  },
   mutations: {
     changeTheCounter: function changeTheCounter(state, data) {
       state.counter += data;
+    }
+  },
+  actions: {
+    changeCounterAction: function changeCounterAction(_ref, data) {
+      var commit = _ref.commit;
+      commit('changeTheCounter', data);
     }
   }
 }));
@@ -78707,9 +78732,7 @@ var render = function () {
         ]),
         _vm._v(" "),
         _c("h2", [
-          _vm._v(
-            "Master component counter is: " + _vm._s(_vm.$store.state.counter)
-          ),
+          _vm._v("Master component counter is: " + _vm._s(_vm.counter)),
         ]),
         _vm._v(" "),
         _c("componentA"),
