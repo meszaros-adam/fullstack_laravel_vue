@@ -9,6 +9,7 @@ import methods from './components/pages/basic/methods'
 import home from './components/home'
 import tags from './admin/pages/tags'
 import category from './admin/pages/category'
+import use_component from './vuex/use_component'
 
 Vue.use(Router)
 
@@ -25,6 +26,10 @@ const routes = [
     {
         path:'/category',
         component: category
+    },
+    {
+        path:'/testvuex',
+        component: use_component
     },
   
     //basic tutorial routes
