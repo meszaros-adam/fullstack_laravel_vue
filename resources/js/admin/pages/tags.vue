@@ -46,7 +46,7 @@
 				<!-- Tag editing modal -->
 				<Modal v-model="editModal" title="Edit tag" :mask-closable="false" :closable="false" >
 
-					 <Input v-model="editData.tagName" placeholder="Edit tag name" />
+					 <Input v-model="editData.tagName" />
 					
 					<div slot="footer">
 						<Button type="default" @click="editModal=false">Close</Button>
@@ -55,29 +55,18 @@
 				</Modal>
 				<!-- Tag editing modal -->
 
-				<!-- Delete alert modal -->
-				<Modal v-model="deleteModal" width="360">
-					<p slot="header" style="color:#f60;text-align:center">
-						<Icon type="ios-information-circle"></Icon>
-						<span>Delete confirmation</span>
-					</p>
-					<div style="text-align:center">
-						<p>Are you sure you want to delete  tag?</p>
-	
-					</div>
-					<div slot="footer">
-						<Button type="error" size="large" long  @click="deleteTag" :loading="isDeleting">Delete</Button>
-					</div>
-				</Modal>
-				<!-- Delete alert modal -->
-
-				
+				<!-- Tag deleting modal -->
+				<deleteModal/>
+				<!-- Tag deleting modal -->
 			</div>
 		</div>
     </div>
 </template>
 
 <script>
+import deleteModal from '../components/deleteModal'
+import {mapGetters} from 'vuex'
+
 export default {
 	data(){
 		return{
@@ -90,7 +79,8 @@ export default {
 			tags: [],
 			isEditing: false,
 			editData: {
-				tagName:''
+				tagName:'',
+				id: ''
 			},
 			index : -1,
 			deleteModal: false,
@@ -100,6 +90,9 @@ export default {
 			},
 			deletingIndex: -1
 		}
+	},
+	components: {
+		deleteModal,
 	},
 	methods:{
 		async addTag(){
@@ -146,30 +139,24 @@ export default {
 			this.isEditing = false
 		},
 		showEditModal(tag, i){
-			this.editData = tag
+			const obj ={
+				tagName: tag.tagName,
+				id: tag.id,
+			}
+			this.editData = obj
 			this.editModal = true
 			this.index = i
-		},
-		async deleteTag(){
-				this.isDeleting=true
-				const res = await this.callApi('post', 'app/delete_tag', this.deleteItem)
-				if(res.status===200){
-					this.tags.splice(this.deletingIndex, 1)
-					this.success('Tag has been deleted successfully!')
-				}else{
-					this.swr()
-				}
-				this.deleteModal= false
-				this.isDeleting=false
+			console.log(this.editData)
 		},
 		showDeleteModal(tag, i){
-			let obj = {
-				id : tag.id,
-				tagName : tag.tagName,
+			const deleteModalObj = {
+				showDeleteModal: true,
+				deleteUrl: 'app/delete_tag',
+				data: tag,
+				deletingIndex: i,
+				isDeleted: false,
 			}
-			this.deleteModal= true
-			this.deleteItem=obj
-			this.deletingIndex = i
+			this.$store.commit('setDeletingModalObj', deleteModalObj)
 		},
 	},
 	async created(){
@@ -179,7 +166,19 @@ export default {
 		}else{
 			this.swr()
 		}
-	}
+	},
+	computed: {
+		...mapGetters([
+			'getDeleteModalObj'
+		])
+	},
+	watch: {
+        getDeleteModalObj(obj){
+            if(obj.isDeleted){
+				this.tags.splice(obj.deletingIndex, 1)
+			}
+        }
+    },
 	
 }
 </script>

@@ -108,8 +108,9 @@
 					</div>
 				</Modal>
 				<!-- category editing modal -->
-
-				<!-- Delete alert modal -->
+				
+				<deleteModal/>
+				<!-- Delete alert modal 
 				<Modal v-model="deleteModal" width="360">
 					<p slot="header" style="color:#f60;text-align:center">
 						<Icon type="ios-information-circle"></Icon>
@@ -123,7 +124,7 @@
 						<Button type="error" size="large" long  @click="deletecategory" :loading="isDeleting">Delete</Button>
 					</div>
 				</Modal>
-				<!-- Delete alert modal -->
+				 Delete alert modal -->
 
 				
 			</div>
@@ -132,6 +133,8 @@
 </template>
 
 <script>
+import deleteModal from '../components/deleteModal'
+
 export default {
 	data(){
 		return{
@@ -161,6 +164,9 @@ export default {
 			isEditingItem: false,
 
 		}
+	},
+	components: {
+		deleteModal,
 	},
 	methods:{
 		handleSuccess (res, file){
@@ -265,7 +271,10 @@ export default {
 		closeEditModal(){
 			this.isEditingItem = false
 			this.editModal = false
-		}
+		},
+		showDeleteModal(){
+
+		},
 	},
 	async created(){
 		const res = await this.callApi('get', 'app/get_category')

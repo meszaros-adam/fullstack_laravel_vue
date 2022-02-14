@@ -15,11 +15,11 @@
     import componentA from './component_A'
     import componentB from './component_B'
     import componentC from './component_C'
-    import {mapGetters, mapActions} from 'vuex'
+    import {mapGetters} from 'vuex'
     export default{
         data(){
             return{
-
+                localVar: 'some value'
             }
         },
         computed: {
@@ -37,6 +37,16 @@
                 this.$store.dispatch('changeCounterAction', 1)
                 //this.$store.commit('changeTheCounter', 1)
             },
-        } 
+            runSomethingWhenCounterChange(){
+                console.log('i am running based on each changes happening')
+            }
+        },
+        watch : {
+            counter(value){
+                console.log('counter is changing', value)
+                this.runSomethingWhenCounterChange()
+                console.log ('local var:' , this.localVar)
+            }
+        }
     }
 </script>
