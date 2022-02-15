@@ -4,12 +4,14 @@ import firstPage from './components/pages/my-first-vue-page'
 import newRoute from './components/pages/new-route'
 import hooks from './components/pages/basic/hooks'
 import methods from './components/pages/basic/methods'
+import use_component from './vuex/use_component'
 
 //admin project pages
 import home from './components/home'
 import tags from './admin/pages/tags'
 import category from './admin/pages/category'
-import use_component from './vuex/use_component'
+import adminusers from './admin/pages/adminusers'
+
 
 Vue.use(Router)
 
@@ -28,9 +30,9 @@ const routes = [
         component: category
     },
     {
-        path:'/testvuex',
-        component: use_component
-    },
+        path:'/adminusers',
+        component: adminusers
+    },   
   
     //basic tutorial routes
     {
@@ -51,6 +53,10 @@ const routes = [
     {
         path: '/methods',
         component: methods
+    },
+    {
+        path:'/testvuex',
+        component: use_component
     },
 ]
 

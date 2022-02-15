@@ -133,8 +133,10 @@ export default {
 			isAdding: false,
 			categoryList: [],
 			editData: {
-				iconImage: '',
 				categoryName: '',
+				created_at:'',
+				iconImage: '',
+				id: '',
 			},
 			editIndex : -1,
 			deleteModal: false,
@@ -237,6 +239,8 @@ export default {
 		},
 		showEditModal(category, index){
 			const obj = {	
+				id: category.id,
+				created_at: category.created_at,
 				iconImage: category.iconImage,
 				categoryName: category.categoryName,
 			}
