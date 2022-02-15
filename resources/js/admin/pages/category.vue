@@ -4,7 +4,7 @@
 			<div class="container-fluid">
 				<!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
 				<div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
-					<p class="_title0">Category <Button @click="addModal=true"><Icon type="md-add"></Icon>Add category</Button></p> 
+					<p class="_title0">Category <Button @click="showAddModal()"><Icon type="md-add"></Icon>Add category</Button></p> 
 					<div class="_overflow _table_div">
 						<table class="_table">
 								<!-- TABLE TITLE -->
@@ -42,6 +42,7 @@
 					 <Input v-model="data.categoryName" placeholder="Add category name" />
 
 					 <Upload
+					 	v-show="showAddUpload"
 					 	ref="uploads"
                         type="drag"
 						:headers="{'x-csrf-token' : token, 'X-Requested-With' : 'XMLHttpRequest'}"
@@ -75,7 +76,7 @@
 				<!-- category editing modal -->
 				<Modal v-model="editModal" title="Edit category" :mask-closable="false" :closable="false" >
 
-					 <Input v-model="editData.categoryName" placeholder="Edit category name" />
+					 <Input v-model="editData.categoryName"/>
 
 					 <Upload
 					 	v-show="showEditUpload"
@@ -110,23 +111,7 @@
 				<!-- category editing modal -->
 				
 				<deleteModal/>
-				<!-- Delete alert modal 
-				<Modal v-model="deleteModal" width="360">
-					<p slot="header" style="color:#f60;text-align:center">
-						<Icon type="ios-information-circle"></Icon>
-						<span>Delete confirmation</span>
-					</p>
-					<div style="text-align:center">
-						<p>Are you sure you want to delete  category?</p>
-	
-					</div>
-					<div slot="footer">
-						<Button type="error" size="large" long  @click="deletecategory" :loading="isDeleting">Delete</Button>
-					</div>
-				</Modal>
-				 Delete alert modal -->
-
-				
+						
 			</div>
 		</div>
     </div>
@@ -134,6 +119,7 @@
 
 <script>
 import deleteModal from '../components/deleteModal'
+import {mapGetters} from 'vuex'
 
 export default {
 	data(){
@@ -159,10 +145,10 @@ export default {
 			deleteIndex: -1,
 			token: '',
 			showEditUpload: false,
+			showAddUpload: true,
 			isEditing: false,
 			//for HandleSucess function.
 			isEditingItem: false,
-
 		}
 	},
 	components: {
@@ -173,8 +159,11 @@ export default {
 			res = `/uploads/${res}`
 			if(this.isEditingItem){
 				this.editData.iconImage = res
+				this.showEditUpload= false
 			}
 			this.data.iconImage = res
+			this.showAddUpload = false
+
 		},
 		handleError (res, file){
 			this.$Notice.warning({
@@ -202,6 +191,7 @@ export default {
 				this.editData.iconImage = ''
 				this.$refs.editDataUpload.clearFiles()
 			}else{
+				this.showAddUpload = true
 				image = this.data.iconImage
 				this.data.iconImage = ''
 				this.$refs.uploads.clearFiles()
@@ -212,6 +202,10 @@ export default {
 				this.data.iconImage = image
 				this.swr()
 			}
+		},
+		showAddModal(){
+			this.showAddUpload = true
+			this.addModal = true
 		},
 		async addCategory(){
 			if(this.data.categoryName.trim()=='') return this.error('Category name is required')
@@ -241,6 +235,17 @@ export default {
 			this.isAdding=false
 			this.$refs.uploads.clearFiles()
 		},
+		showEditModal(category, index){
+			const obj = {	
+				iconImage: category.iconImage,
+				categoryName: category.categoryName,
+			}
+			obj.iconImage.trim() =='' ? this.showEditUpload = true :  this.showEditUpload = false 
+			this.editData = obj
+			this.editModal = true
+			this.isEditingItem = true
+			this.editIndex = index
+		},
 		async editCategory(){
 			if(this.editData.categoryName.trim()=='') return this.error('Category name is required')
 			if(this.editData.iconImage.trim()=='') return this.error('Icon image is required')
@@ -262,18 +267,20 @@ export default {
 			}
 			this.isEditing = false
 		},
-		showEditModal(category, index){
-			this.editData = category
-			this.editModal = true
-			this.isEditingItem = true
-			this.editIndex = index
-		},
+
 		closeEditModal(){
 			this.isEditingItem = false
 			this.editModal = false
 		},
-		showDeleteModal(){
-
+		showDeleteModal(category, i){
+			const deleteModalObj = {
+				showDeleteModal: true,
+				deleteUrl: 'app/delete_category',
+				data: category,
+				deletingIndex: i,
+				objectType: 'category',
+			}
+			this.$store.commit('setDeletingModalObj', deleteModalObj)
 		},
 	},
 	async created(){
@@ -284,7 +291,19 @@ export default {
 			this.swr()
 		}
 		this.token=	window.Laravel.csrfToken
-	}
+	},
+	computed: {
+		...mapGetters([
+			'getDeleteModalObj'
+		])
+	},
+	watch: {
+        getDeleteModalObj(obj){
+            if(obj.isDeleted){
+				this.categoryList.splice(obj.deletingIndex, 1)
+			}
+        }
+    },
 }
 </script>
 

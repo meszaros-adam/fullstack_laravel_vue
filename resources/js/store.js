@@ -12,6 +12,8 @@ export default new vuex.Store({
             data: null,
             deletingIndex: -1,
             isDeleted: false, 
+            //category or tag
+            objecType: '',
         },
     },
     getters:{
@@ -26,19 +28,8 @@ export default new vuex.Store({
         changeTheCounter(state, data){
             state.counter += data
         },
-        setDeleteModal(state, data){
-            const deleteModalObj = {
-                showDeleteModal: false,
-                deleteUrl: '',
-                data: null,
-                deletingIndex: -1,
-                isDeleted: data, 
-            }
-            state.deleteModalObj = deleteModalObj
-        },
         setDeletingModalObj(state, data){
             state.deleteModalObj = data
-            console.log(state.deleteModalObj.showDeleteModal)
         }  
     },
     actions: {

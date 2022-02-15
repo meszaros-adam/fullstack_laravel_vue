@@ -55,9 +55,8 @@
 				</Modal>
 				<!-- Tag editing modal -->
 
-				<!-- Tag deleting modal -->
 				<deleteModal/>
-				<!-- Tag deleting modal -->
+
 			</div>
 		</div>
     </div>
@@ -82,7 +81,7 @@ export default {
 				tagName:'',
 				id: ''
 			},
-			index : -1,
+			editIndex : -1,
 			deleteModal: false,
 			isDeleting: false,
 			deleteItem: {
@@ -123,7 +122,7 @@ export default {
 			this.isEditing = true
 			const res = await this.callApi('post', 'app/edit_tag', this.editData)
 			if(res.status===200){
-				this.tags[this.index].tagName = this.editData.tagName
+				this.tags[this.editIndex].tagName = this.editData.tagName
 				this.success('Tag has been edited succesfully')
 				this.editModal = false
 			}else{
@@ -145,7 +144,7 @@ export default {
 			}
 			this.editData = obj
 			this.editModal = true
-			this.index = i
+			this.editIndex = i
 			console.log(this.editData)
 		},
 		showDeleteModal(tag, i){
@@ -154,7 +153,7 @@ export default {
 				deleteUrl: 'app/delete_tag',
 				data: tag,
 				deletingIndex: i,
-				isDeleted: false,
+				objectType: 'tag',
 			}
 			this.$store.commit('setDeletingModalObj', deleteModalObj)
 		},
