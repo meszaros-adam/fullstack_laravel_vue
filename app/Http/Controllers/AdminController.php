@@ -11,7 +11,7 @@ class AdminController extends Controller
 {
     public function addTag(Request $request){
         //validate request
-        $validated = $request->validate([
+        $this->valiate($request,[
             'tagName' => 'required',
         ]);
 
@@ -21,7 +21,7 @@ class AdminController extends Controller
     }
     public function editTag(Request $request){
         //validate request
-        $validated = $request->validate([
+        $this->valiate($request,[
             'tagName' => 'required',
         ]);
 
@@ -31,7 +31,7 @@ class AdminController extends Controller
     }
     public function deleteTag(Request $request){
         //validate request
-        $validated = $request->validate([
+        $this->valiate($request,[
             'id' => 'required',
         ]);
 
@@ -66,7 +66,7 @@ class AdminController extends Controller
     }
     public function addCategory(Request $request){
         //validate request
-        $validated = $request->validate([
+        $this->valiate($request,[
             'categoryName' => 'required',
             'iconImage' => 'required',
         ]);
@@ -80,7 +80,7 @@ class AdminController extends Controller
         return Category::orderBy('id', 'desc')->get();
     }
     public function editCategory(Request $request){
-        $validated = $request->validate([
+        $this->valiate($request,[
             'categoryName' => 'required',
             'iconImage' => 'required',
         ]);
@@ -93,7 +93,7 @@ class AdminController extends Controller
     }
     public function deleteCategory(Request $request){
         //validate request
-        $validated = $request->validate([
+        $this->valiate($request,[
             'id' => 'required',
             'iconImage' => 'required',
         ]);
@@ -104,12 +104,14 @@ class AdminController extends Controller
     }
     public function addUser(Request $request){
         //validate request
-        $validated = $request->validate([
+        $this->valiate($request,[
             'fullName' => 'required',
-            'email' => 'bail|required|email',
+            //email should be unique in users table
+            'email' => 'bail|required|email|unique:users',
             'password' => 'bail|required|min:6',
             'userType' => 'required',
         ]);
+        
         $password = bcrypt($request->password);
         $user = User::create([
             'fullName' => $request->fullName,
@@ -122,5 +124,27 @@ class AdminController extends Controller
     public function getUser(){
         //where user type not equal user
         return User::where('userType', '!=', 'User')->get();
+    }
+    public function editUser(Request $request){
+        //validate request
+        $this->validate($request,[
+            'fullName' => 'required',
+            //email should be unique in users table
+            'email' => 'bail|required|email|unique:users,email,'.$request->id,
+            'password' => 'min:6',
+            'userType' => 'required',
+        ]);
+
+        $data = [
+            'fullName' => $request->fullName,
+            'email' => $request->email,
+            'userType' => $request->userType,
+        ];
+        if($request->password){
+            $password = bcrypt($request->password);
+            $data['password'] = $password;
+        }
+        $user = User::where('id', $request->id)->update($data);
+        return  $user;
     }
 }

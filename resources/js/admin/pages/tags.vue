@@ -137,8 +137,8 @@ export default {
 		},
 		showEditModal(tag, i){
 			const obj ={
-				tagName: tag.tagName,
 				id: tag.id,
+				tagName: tag.tagName,
 			}
 			this.editData = obj
 			this.editModal = true

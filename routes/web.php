@@ -25,6 +25,7 @@ Route::post('app/edit_category',[App\Http\Controllers\AdminController::class, 'e
 Route::post('app/delete_category',[App\Http\Controllers\AdminController::class, 'deleteCategory']);
 Route::post('app/create_user',[App\Http\Controllers\AdminController::class, 'addUser']);
 Route::get('app/get_users',[App\Http\Controllers\AdminController::class, 'getUser']);
+Route::post('app/edit_user',[App\Http\Controllers\AdminController::class, 'editUser']);
 
 Route::get('/', function () {
     return view('welcome');
