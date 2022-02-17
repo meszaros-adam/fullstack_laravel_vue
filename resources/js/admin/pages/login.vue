@@ -58,7 +58,7 @@ export default {
 <style scoped>
     ._1adminOverveiw_table_recent{
         margin: 0 auto;
-        margin-top: 20px;
+        margin-top: 40px;
     }
     .login_footer{
         text-align: right;
@@ -67,5 +67,6 @@ export default {
         font-family: monospace;
         margin-bottom: 30px;
         border-bottom: 2px dashed black;
+        color: black;
     }
 </style>

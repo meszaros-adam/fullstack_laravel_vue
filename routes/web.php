@@ -28,13 +28,6 @@ Route::get('app/get_users',[App\Http\Controllers\AdminController::class, 'getUse
 Route::post('app/edit_user',[App\Http\Controllers\AdminController::class, 'editUser']);
 Route::post('app/admin_login',[App\Http\Controllers\AdminController::class, 'adminLogin']);
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-//Auth::routes();
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::any('{slug}', function(){
-    return view('welcome'); 
-});
+Route::get('/logout',[App\Http\Controllers\AdminController::class, 'logout']);
+Route::get('/',[App\Http\Controllers\AdminController::class, 'index']);
+Route::any('{slug}',[App\Http\Controllers\AdminController::class, 'index']);

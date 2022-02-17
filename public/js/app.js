@@ -12283,7 +12283,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n._1adminOverveiw_table_recent[data-v-c2ef5de0]{\n    margin: 0 auto;\n    margin-top: 20px;\n}\n.login_footer[data-v-c2ef5de0]{\n    text-align: right;\n}\n.login_header h2[data-v-c2ef5de0]{\n    font-family: monospace;\n    margin-bottom: 30px;\n    border-bottom: 2px dashed black;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n._1adminOverveiw_table_recent[data-v-c2ef5de0]{\n    margin: 0 auto;\n    margin-top: 40px;\n}\n.login_footer[data-v-c2ef5de0]{\n    text-align: right;\n}\n.login_header h2[data-v-c2ef5de0]{\n    font-family: monospace;\n    margin-bottom: 30px;\n    border-bottom: 2px dashed black;\n    color: black;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -12303,37 +12303,55 @@ ___CSS_LOADER_EXPORT___.push([module.id, "\n._1adminOverveiw_table_recent[data-v
   MIT License http://www.opensource.org/licenses/mit-license.php
   Author Tobias Koppers @sokra
 */
-// css base code, injected by the css-loader
-// eslint-disable-next-line func-names
 module.exports = function (cssWithMappingToString) {
   var list = []; // return the list of modules as css string
 
   list.toString = function toString() {
     return this.map(function (item) {
-      var content = cssWithMappingToString(item);
+      var content = "";
+      var needLayer = typeof item[5] !== "undefined";
+
+      if (item[4]) {
+        content += "@supports (".concat(item[4], ") {");
+      }
 
       if (item[2]) {
-        return "@media ".concat(item[2], " {").concat(content, "}");
+        content += "@media ".concat(item[2], " {");
+      }
+
+      if (needLayer) {
+        content += "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {");
+      }
+
+      content += cssWithMappingToString(item);
+
+      if (needLayer) {
+        content += "}";
+      }
+
+      if (item[2]) {
+        content += "}";
+      }
+
+      if (item[4]) {
+        content += "}";
       }
 
       return content;
     }).join("");
   }; // import a list of modules into the list
-  // eslint-disable-next-line func-names
 
 
-  list.i = function (modules, mediaQuery, dedupe) {
+  list.i = function i(modules, media, dedupe, supports, layer) {
     if (typeof modules === "string") {
-      // eslint-disable-next-line no-param-reassign
-      modules = [[null, modules, ""]];
+      modules = [[null, modules, undefined]];
     }
 
     var alreadyImportedModules = {};
 
     if (dedupe) {
-      for (var i = 0; i < this.length; i++) {
-        // eslint-disable-next-line prefer-destructuring
-        var id = this[i][0];
+      for (var k = 0; k < this.length; k++) {
+        var id = this[k][0];
 
         if (id != null) {
           alreadyImportedModules[id] = true;
@@ -12341,19 +12359,37 @@ module.exports = function (cssWithMappingToString) {
       }
     }
 
-    for (var _i = 0; _i < modules.length; _i++) {
-      var item = [].concat(modules[_i]);
+    for (var _k = 0; _k < modules.length; _k++) {
+      var item = [].concat(modules[_k]);
 
       if (dedupe && alreadyImportedModules[item[0]]) {
-        // eslint-disable-next-line no-continue
         continue;
       }
 
-      if (mediaQuery) {
-        if (!item[2]) {
-          item[2] = mediaQuery;
+      if (typeof layer !== "undefined") {
+        if (typeof item[5] === "undefined") {
+          item[5] = layer;
         } else {
-          item[2] = "".concat(mediaQuery, " and ").concat(item[2]);
+          item[1] = "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {").concat(item[1], "}");
+          item[5] = layer;
+        }
+      }
+
+      if (media) {
+        if (!item[2]) {
+          item[2] = media;
+        } else {
+          item[1] = "@media ".concat(item[2], " {").concat(item[1], "}");
+          item[2] = media;
+        }
+      }
+
+      if (supports) {
+        if (!item[4]) {
+          item[4] = "".concat(supports);
+        } else {
+          item[1] = "@supports (".concat(item[4], ") {").concat(item[1], "}");
+          item[4] = supports;
         }
       }
 
@@ -12377,31 +12413,26 @@ module.exports = function (cssWithMappingToString) {
 
 module.exports = function (url, options) {
   if (!options) {
-    // eslint-disable-next-line no-param-reassign
     options = {};
-  } // eslint-disable-next-line no-underscore-dangle, no-param-reassign
+  }
 
-
-  url = url && url.__esModule ? url.default : url;
-
-  if (typeof url !== "string") {
+  if (!url) {
     return url;
-  } // If url is already wrapped in quotes, remove them
+  }
 
+  url = String(url.__esModule ? url.default : url); // If url is already wrapped in quotes, remove them
 
   if (/^['"].*['"]$/.test(url)) {
-    // eslint-disable-next-line no-param-reassign
     url = url.slice(1, -1);
   }
 
   if (options.hash) {
-    // eslint-disable-next-line no-param-reassign
     url += options.hash;
   } // Should url be wrapped?
   // See https://drafts.csswg.org/css-values-3/#urls
 
 
-  if (/["'() \t\n]/.test(url) || options.needQuotes) {
+  if (/["'() \t\n]|(%20)/.test(url) || options.needQuotes) {
     return "\"".concat(url.replace(/"/g, '\\"').replace(/\n/g, "\\n"), "\"");
   }
 
