@@ -15,6 +15,7 @@ export default new vuex.Store({
             //category or tag
             objecType: '',
         },
+        user: false,
     },
     getters:{
         getCounter(state){
@@ -30,7 +31,11 @@ export default new vuex.Store({
         },
         setDeletingModalObj(state, data){
             state.deleteModalObj = data
-        }  
+        },
+        updateUser(state , data){
+            state.user = data
+            console.log('stoe user: ', state.user)
+        }
     },
     actions: {
         changeCounterAction({commit}, data){

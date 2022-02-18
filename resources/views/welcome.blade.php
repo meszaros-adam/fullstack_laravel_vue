@@ -17,23 +17,12 @@
 
     </head>
     <body>
-        <!--<div>
-            @if (Route::has('login'))
-                <div>
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Log in</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
-        </div> -->
         <div id="app">
-            <mainapp></mainapp>
+            @if(Auth::check())
+            <mainapp :user="{{Auth::user()}}"></mainapp>
+            @else
+            <mainapp :user="false"></mainapp>
+            @endif
         </div>        
         <script src="{{mix('/js/app.js')}}"></script>
     </body>
