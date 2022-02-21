@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Tag;
 use App\Models\Category;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -37,7 +38,7 @@ class AdminController extends Controller
     }
     public function addTag(Request $request){
         //validate request
-        $this->valiate($request,[
+        $this->validate($request,[
             'tagName' => 'required',
         ]);
 
@@ -47,8 +48,9 @@ class AdminController extends Controller
     }
     public function editTag(Request $request){
         //validate request
-        $this->valiate($request,[
+        $this->validate($request,[
             'tagName' => 'required',
+            'id' => 'required',
         ]);
 
         return Tag::where('id', $request->id)->update([
@@ -57,14 +59,14 @@ class AdminController extends Controller
     }
     public function deleteTag(Request $request){
         //validate request
-        $this->valiate($request,[
+        $this->validate($request,[
             'id' => 'required',
         ]);
 
         return Tag::where('id', $request->id)->delete();
     }
 
-    public function getTag(){
+    public function getTags(){
         return Tag::orderBy('id', 'desc')->get();
     }
     public function upload(Request $request){
@@ -92,7 +94,7 @@ class AdminController extends Controller
     }
     public function addCategory(Request $request){
         //validate request
-        $this->valiate($request,[
+        $this->validate($request,[
             'categoryName' => 'required',
             'iconImage' => 'required',
         ]);
@@ -106,9 +108,10 @@ class AdminController extends Controller
         return Category::orderBy('id', 'desc')->get();
     }
     public function editCategory(Request $request){
-        $this->valiate($request,[
+        $this->validate($request,[
             'categoryName' => 'required',
             'iconImage' => 'required',
+            'id' => 'required',
         ]);
 
         return Category::where('id', $request->id)->update([
@@ -119,7 +122,7 @@ class AdminController extends Controller
     }
     public function deleteCategory(Request $request){
         //validate request
-        $this->valiate($request,[
+        $this->validate($request,[
             'id' => 'required',
             'iconImage' => 'required',
         ]);
@@ -130,7 +133,7 @@ class AdminController extends Controller
     }
     public function addUser(Request $request){
         //validate request
-        $this->valiate($request,[
+        $this->validate($request,[
             'fullName' => 'required',
             //email should be unique in users table
             'email' => 'bail|required|email|unique:users',
@@ -159,6 +162,7 @@ class AdminController extends Controller
             'email' => 'bail|required|email|unique:users,email,'.$request->id,
             'password' => 'min:6',
             'userType' => 'required',
+            'id' => 'required',
         ]);
 
         $data = [
@@ -196,5 +200,28 @@ class AdminController extends Controller
             'msg' => 'Incorrect login details',
             ],401);
         }
+    }
+    public function addRole(Request $request){
+        //validate request
+        $this->validate($request,[
+            'roleName' => 'required',
+        ]);
+
+        return Role::create([
+            'roleName' => $request->roleName,
+        ]);
+    }
+    public function getRoles(){
+        return Role::orderby('id', 'desc')->get();
+    }
+    public function editRole(Request $request){
+        $this->validate($request,[
+            'roleName' => 'required',
+            'id' => 'required',
+        ]);
+
+        return Role::where('id', $request->id)->update([
+            'roleName' => $request->roleName
+        ]);
     }
 }

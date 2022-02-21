@@ -19,7 +19,7 @@
 
 
 								<!-- ITEMS -->
-							<tr v-for="(category, i) in categoryList" :key="i" v-if="categoryList.length">
+							<tr v-for="(category, i) in categoryList" :key="i">
 								<td>{{category.id}}</td>
 								<td class="table_image">
 									<img :src="category.iconImage">
@@ -28,7 +28,7 @@
 								<td>{{category.created_at}}</td>
 								<td>
 									<Button @click="showEditModal(category, i)" type="info" size="small">Edit</Button>
-									<Button @click="showDeleteModal(category, i)" type="error" size="small" :loading="category.isDeleting">Delete</Button>
+									<Button @click="showDeleteModal(category, i)" type="error" size="small">Delete</Button>
 								</td>
 							</tr>
 
@@ -68,7 +68,7 @@
 
 					<div slot="footer">
 						<Button type="default" @click="addModal=false ; deleteImage()">Close</Button>
-						<Button type="primary" @click="addCategory" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add category'}}</Button>
+						<Button type="primary" @click="add" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add category'}}</Button>
 					</div>
 				</Modal>
 				<!-- category adding modal -->
@@ -105,7 +105,7 @@
 
 					<div slot="footer">
 						<Button type="default" @click="closeEditModal">Close</Button>
-						<Button type="primary" @click="editCategory" :disabled="isEditing" :loading="isEditing">{{isEditing ? 'Editing' : 'Edit category'}}</Button>
+						<Button type="primary" @click="edit" :disabled="isEditing" :loading="isEditing">{{isEditing ? 'Editing' : 'Edit category'}}</Button>
 					</div>
 				</Modal>
 				<!-- category editing modal -->
@@ -209,7 +209,7 @@ export default {
 			this.showAddUpload = true
 			this.addModal = true
 		},
-		async addCategory(){
+		async add(){
 			if(this.data.categoryName.trim()=='') return this.error('Category name is required')
 			if(this.data.iconImage.trim()=='') return this.error('Icon image is required')
 			this.isAdding=true
@@ -250,7 +250,7 @@ export default {
 			this.isEditingItem = true
 			this.editIndex = index
 		},
-		async editCategory(){
+		async edit(){
 			if(this.editData.categoryName.trim()=='') return this.error('Category name is required')
 			if(this.editData.iconImage.trim()=='') return this.error('Icon image is required')
 			this.isEditing = true

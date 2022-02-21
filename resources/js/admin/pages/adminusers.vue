@@ -20,7 +20,7 @@
 
 
 								<!-- ITEMS -->
-							<tr v-for="(user, i) in users" :key="i" v-if="users.length">
+							<tr v-for="(user, i) in users" :key="i">
 								<td>{{user.id}}</td>
 								<td class="_table_name">{{user.fullName}}</td>
                                 <td>{{user.email}}</td>
@@ -60,7 +60,7 @@
 					
 					<div slot="footer">
 						<Button type="default" @click="addModal=false">Close</Button>
-						<Button type="primary" @click="addUser()" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add admin'}}</Button>
+						<Button type="primary" @click="add()" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add admin'}}</Button>
 					</div>
 				</Modal>
 				<!-- User adding modal -->
@@ -86,7 +86,7 @@
 					
 					<div slot="footer">
 						<Button type="default" @click="editModal=false">Close</Button>
-						<Button type="primary" @click="editUser" :disabled="isEditing" :loading="isEditing">{{isEditing ? 'Editing' : 'Edit user'}}</Button>
+						<Button type="primary" @click="edit" :disabled="isEditing" :loading="isEditing">{{isEditing ? 'Editing' : 'Edit user'}}</Button>
 					</div>
 				</Modal>
 				<!-- User editing modal -->
@@ -135,7 +135,7 @@ export default {
 		deleteModal,
 	},
 	methods:{
-		async addUser(){
+		async add(){
 			if(this.data.fullName.trim()=='') return this.error('Full name name is required')
             if(this.data.email.trim()=='') return this.error('Email is required')
             if(this.data.password.trim()=='') return this.error('Password is required')
@@ -162,7 +162,7 @@ export default {
 			}
 			this.isAdding=false
 		},
-		async editUser(){
+		async edit(){
 			if(this.editData.fullName.trim()=='') return this.error('Full name name is required')
             if(this.editData.email.trim()=='') return this.error('Email is required')
             if(this.editData.userType.trim()=='') return this.error('Admin type is required')

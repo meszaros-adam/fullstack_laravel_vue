@@ -16,7 +16,7 @@ use App\Http\Middleware\AdminCheck;
 
 Route::prefix('app')->middleware([AdminCheck::class])->group(function(){
     Route::post('/create_tag',[App\Http\Controllers\AdminController::class, 'addTag']);
-    Route::get('/get_tags',[App\Http\Controllers\AdminController::class, 'getTag']);
+    Route::get('/get_tags',[App\Http\Controllers\AdminController::class, 'getTags']);
     Route::post('/edit_tag',[App\Http\Controllers\AdminController::class, 'editTag']);
     Route::post('/delete_tag',[App\Http\Controllers\AdminController::class, 'deleteTag']);
     Route::post('/upload',[App\Http\Controllers\AdminController::class, 'upload']);
@@ -26,10 +26,15 @@ Route::prefix('app')->middleware([AdminCheck::class])->group(function(){
     Route::post('/edit_category',[App\Http\Controllers\AdminController::class, 'editCategory']);
     Route::post('/delete_category',[App\Http\Controllers\AdminController::class, 'deleteCategory']);
     Route::post('/create_user',[App\Http\Controllers\AdminController::class, 'addUser']);
+    Route::post('/admin_login',[App\Http\Controllers\AdminController::class, 'adminLogin']);
     Route::get('/get_users',[App\Http\Controllers\AdminController::class, 'getUser']);
     Route::post('/edit_user',[App\Http\Controllers\AdminController::class, 'editUser']);
-    Route::post('/admin_login',[App\Http\Controllers\AdminController::class, 'adminLogin']);
+    Route::post('/create_role',[App\Http\Controllers\AdminController::class, 'addRole']);
+    Route::get('/get_roles',[App\Http\Controllers\AdminController::class, 'getRoles']);
+    Route::post('/edit_role',[App\Http\Controllers\AdminController::class, 'editRole']);
 });
+
+
 
 
 

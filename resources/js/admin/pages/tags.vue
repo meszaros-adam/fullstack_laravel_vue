@@ -18,13 +18,13 @@
 
 
 								<!-- ITEMS -->
-							<tr v-for="(tag, i) in tags" :key="i" v-if="tags.length">
+							<tr v-for="(tag, i) in tags" :key="i" >
 								<td>{{tag.id}}</td>
 								<td class="_table_name">{{tag.tagName}}</td>
 								<td>{{tag.created_at}}</td>
 								<td>
 									<Button @click="showEditModal(tag, i)" type="info" size="small">Edit</Button>
-									<Button @click="showDeleteModal(tag, i)" type="error" size="small" :loading="tag.isDeleting">Delete</Button>
+									<Button @click="showDeleteModal(tag, i)" type="error" size="small">Delete</Button>
 								</td>
 							</tr>
 
@@ -38,7 +38,7 @@
 					
 					<div slot="footer">
 						<Button type="default" @click="addModal=false">Close</Button>
-						<Button type="primary" @click="addTag" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add tag'}}</Button>
+						<Button type="primary" @click="add" :disabled="isAdding" :loading="isAdding">{{isAdding ? 'Adding' : 'Add tag'}}</Button>
 					</div>
 				</Modal>
 				<!-- Tag adding modal -->
@@ -50,7 +50,7 @@
 					
 					<div slot="footer">
 						<Button type="default" @click="editModal=false">Close</Button>
-						<Button type="primary" @click="editTag" :disabled="isEditing" :loading="isEditing">{{isEditing ? 'Editing' : 'Edit tag'}}</Button>
+						<Button type="primary" @click="edit" :disabled="isEditing" :loading="isEditing">{{isEditing ? 'Editing' : 'Edit tag'}}</Button>
 					</div>
 				</Modal>
 				<!-- Tag editing modal -->
@@ -94,7 +94,7 @@ export default {
 		deleteModal,
 	},
 	methods:{
-		async addTag(){
+		async add(){
 			if(this.data.tagName.trim()=='') return this.error('Tag name is required')
 			this.isAdding=true
 			const res = await this.callApi('post', 'app/create_tag', this.data)
@@ -115,7 +115,7 @@ export default {
 			}
 			this.isAdding=false
 		},
-		async editTag(){
+		async edit(){
 			if(this.editData.tagName.trim()=='') return this.error('Tag name is required')
 			this.isEditing = true
 			const res = await this.callApi('post', 'app/edit_tag', this.editData)
