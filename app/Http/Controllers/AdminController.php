@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function index(Request $request){
 
-        //first check if you are logged in and you are admin user...
+        //first check if you are logged in...
         if(!Auth::check() && $request->path()!='login'){
             return redirect('/login');
         }
@@ -24,7 +24,7 @@ class AdminController extends Controller
         //you are alredy logged in so check for if you are an admin user...
         $user = Auth::user();
 
-        if($user->userType == 'User'){
+        if($user->role->isAdmin == 0){
             return redirect('/login');
         }
         if($request->path() == 'login'){
@@ -138,7 +138,7 @@ class AdminController extends Controller
             //email should be unique in users table
             'email' => 'bail|required|email|unique:users',
             'password' => 'bail|required|min:6',
-            'userType' => 'required',
+            'role_id' => 'required',
         ]);
         
         $password = bcrypt($request->password);
@@ -146,13 +146,13 @@ class AdminController extends Controller
             'fullName' => $request->fullName,
             'email' => $request->email,
             'password' => $password,
-            'userType' => $request->userType,
+            'role_id' => $request->role_id,
         ]);
         return  $user;
     }
     public function getUser(){
         //where user type not equal user
-        return User::where('userType', '!=', 'User')->get();
+        return User::orderBy('id', 'desc')->get();
     }
     public function editUser(Request $request){
         //validate request
@@ -161,14 +161,14 @@ class AdminController extends Controller
             //email should be unique in users table
             'email' => 'bail|required|email|unique:users,email,'.$request->id,
             'password' => 'min:6',
-            'userType' => 'required',
+            'role_id' => 'required',
             'id' => 'required',
         ]);
 
         $data = [
             'fullName' => $request->fullName,
             'email' => $request->email,
-            'userType' => $request->userType,
+            'role_id' => $request->role_id,
         ];
         if($request->password){
             $password = bcrypt($request->password);
@@ -184,7 +184,8 @@ class AdminController extends Controller
         ]);
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password ])){
             $user = Auth::user();
-            if($user->userType == 'User'){
+
+            if($user->role->isAdmin == 0){
                 Auth::logout();
                 return response()->json([
                     'msg' => 'Incorrect login details',

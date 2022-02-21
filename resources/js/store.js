@@ -34,7 +34,6 @@ export default new vuex.Store({
         },
         updateUser(state , data){
             state.user = data
-            console.log('stoe user: ', state.user)
         }
     },
     actions: {
