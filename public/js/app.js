@@ -5894,6 +5894,49 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         update: false,
         "delete": false,
         name: 'home'
+      }],
+      defaultResources: [{
+        resourceName: 'Tags',
+        read: false,
+        write: false,
+        update: false,
+        "delete": false,
+        name: 'tags'
+      }, {
+        resourceName: 'Category',
+        read: false,
+        write: false,
+        update: false,
+        "delete": false,
+        name: 'category'
+      }, {
+        resourceName: 'Adminuser',
+        read: false,
+        write: false,
+        update: false,
+        "delete": false,
+        name: 'adminuser'
+      }, {
+        resourceName: 'Role',
+        read: false,
+        write: false,
+        update: false,
+        "delete": false,
+        name: 'role'
+      }, {
+        resourceName: 'AssignRole',
+        read: false,
+        write: false,
+        update: false,
+        "delete": false,
+        name: 'assignRole'
+      }, {
+        resourceName: 'Home',
+        read: false,
+        write: false,
+        update: false,
+        "delete": false,
+        name: 'home'
       }]
     };
   },
@@ -5902,7 +5945,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var _this = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        var data, res;
+        var data, res, index;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
@@ -5927,6 +5970,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 if (res.status == 200) {
                   _this.success('Role has been assigned succesfully!');
+
+                  index = _this.roles.findIndex(function (role) {
+                    return role.id == _this.data.id;
+                  });
+                  _this.roles[index].permission = data;
                 } else {
                   _this.swr();
                 }
@@ -5938,10 +5986,24 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee);
       }))();
+    },
+    changeAdmin: function changeAdmin() {
+      var _this2 = this;
+
+      var index = this.roles.findIndex(function (role) {
+        return role.id == _this2.data.id;
+      });
+      var permission = this.roles[index].permission;
+
+      if (!permission) {
+        this.resources = this.defaultResources;
+      } else {
+        this.resources = JSON.parse(permission);
+      }
     }
   },
   created: function created() {
-    var _this2 = this;
+    var _this3 = this;
 
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
       var res;
@@ -5950,19 +6012,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           switch (_context2.prev = _context2.next) {
             case 0:
               _context2.next = 2;
-              return _this2.callApi("get", "app/get_roles");
+              return _this3.callApi("get", "app/get_roles");
 
             case 2:
               res = _context2.sent;
 
               if (res.status == 200) {
-                _this2.roles = res.data;
+                _this3.roles = res.data;
 
                 if (res.data.length) {
-                  _this2.data.id;
+                  _this3.data.id;
                 }
               } else {
-                _this2.swr();
+                _this3.swr();
               }
 
             case 4:
@@ -79351,6 +79413,7 @@ var render = function () {
                   {
                     staticStyle: { width: "300px" },
                     attrs: { placeholder: "Select admin type" },
+                    on: { "on-change": _vm.changeAdmin },
                     model: {
                       value: _vm.data.id,
                       callback: function ($$v) {

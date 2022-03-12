@@ -14,7 +14,7 @@
         >
           <p class="_title0">
             Role Management
-            <Select v-model="data.id" placeholder="Select admin type" style="width:300px">
+            <Select v-model="data.id" placeholder="Select admin type" style="width:300px" @on-change="changeAdmin">
 				<Option :value="role.id" v-for="(role, i) in roles" :key="i" >{{role.roleName}}</Option> 
             </Select>
           </p>
@@ -65,6 +65,13 @@ export default {
                   {resourceName: 'AssignRole', read: false, write: false, update: false, delete: false,name: 'assignRole'},
                   {resourceName: 'Home', read: false, write: false, update: false, delete: false,name: 'home'}
                   ],
+      defaultResources: [{resourceName: 'Tags', read: false, write: false, update: false, delete: false,name: 'tags'},
+                  {resourceName: 'Category', read: false, write: false, update: false, delete: false,name: 'category'},
+                  {resourceName: 'Adminuser', read: false, write: false, update: false, delete: false,name: 'adminuser'},
+                  {resourceName: 'Role', read: false, write: false, update: false, delete: false,name: 'role'},
+                  {resourceName: 'AssignRole', read: false, write: false, update: false, delete: false,name: 'assignRole'},
+                  {resourceName: 'Home', read: false, write: false, update: false, delete: false,name: 'home'}
+                  ],
     };
   },
   methods: {
@@ -74,18 +81,30 @@ export default {
       const res = await this.callApi('post','app/assign_role',{'permission' :data, 'id': this.data.id})
       if(res.status==200){
         this.success('Role has been assigned succesfully!')
+        let index = this.roles.findIndex(role => role.id ==this.data.id)
+        this.roles[index].permission = data
+
       }
       else{
         this.swr()
       }
+    },
+    changeAdmin(){
+    let index = this.roles.findIndex(role => role.id == this.data.id)
+    let permission = this.roles[index].permission
+    if(!permission){
+      this.resources = this.defaultResources
+    }else{
+      this.resources = JSON.parse(permission)
     }
+  }
   },
   async created() {
     const res = await this.callApi("get", "app/get_roles")
     if (res.status == 200) {
       this.roles = res.data
       if(res.data.length){
-        this.data.id
+        this.data.id 
       }
     } else {
       this.swr()
