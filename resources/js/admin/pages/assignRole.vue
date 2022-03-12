@@ -14,7 +14,7 @@
         >
           <p class="_title0">
             Role Management
-            <Select v-model="data.role_id" placeholder="Select admin type" style="width:300px">
+            <Select v-model="data.id" placeholder="Select admin type" style="width:300px">
 				<Option :value="role.id" v-for="(role, i) in roles" :key="i" >{{role.roleName}}</Option> 
             </Select>
           </p>
@@ -37,8 +37,10 @@
                 <td><Checkbox v-model="r.write"></Checkbox></td>
                 <td><Checkbox v-model="r.update"></Checkbox></td>
                 <td><Checkbox v-model="r.delete"></Checkbox></td>
-
               </tr>
+              <div class="center-button">
+                <Button type="primary" :loading="isSending" :disabled="isSending" @click="assignRoles">Assign</Button>
+              </div>
             </table>
           </div>
         </div>
@@ -52,8 +54,9 @@ export default {
   data() {
     return {
       data: {
-        roleName: '',
+        id: null,
       },
+      isSending: false,
       roles: [],
       resources: [{resourceName: 'Tags', read: false, write: false, update: false, delete: false,name: 'tags'},
                   {resourceName: 'Category', read: false, write: false, update: false, delete: false,name: 'category'},
@@ -61,20 +64,31 @@ export default {
                   {resourceName: 'Role', read: false, write: false, update: false, delete: false,name: 'role'},
                   {resourceName: 'AssignRole', read: false, write: false, update: false, delete: false,name: 'assignRole'},
                   {resourceName: 'Home', read: false, write: false, update: false, delete: false,name: 'home'}
-                  
                   ],
     };
   },
   methods: {
-  
+    async assignRoles(){
+      if(this.data.id==null) return this.info('Please choose role!')
+      let data = JSON.stringify(this.resources)
+      const res = await this.callApi('post','app/assign_role',{'permission' :data, 'id': this.data.id})
+      if(res.status==200){
+        this.success('Role has been assigned succesfully!')
+      }
+      else{
+        this.swr()
+      }
+    }
   },
   async created() {
-    console.log(this.$route)
-    const res = await this.callApi("get", "app/get_roles"); 
+    const res = await this.callApi("get", "app/get_roles")
     if (res.status == 200) {
-      this.roles = res.data;
+      this.roles = res.data
+      if(res.data.length){
+        this.data.id
+      }
     } else {
-      this.swr();
+      this.swr()
     }
   },
 };

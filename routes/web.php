@@ -29,9 +29,12 @@ Route::prefix('app')->middleware([AdminCheck::class])->group(function(){
     Route::post('/admin_login',[App\Http\Controllers\AdminController::class, 'adminLogin']);
     Route::get('/get_users',[App\Http\Controllers\AdminController::class, 'getUser']);
     Route::post('/edit_user',[App\Http\Controllers\AdminController::class, 'editUser']);
+    //role routes
     Route::post('/create_role',[App\Http\Controllers\AdminController::class, 'addRole']);
     Route::get('/get_roles',[App\Http\Controllers\AdminController::class, 'getRoles']);
     Route::post('/edit_role',[App\Http\Controllers\AdminController::class, 'editRole']);
+    Route::post('/assign_role',[App\Http\Controllers\AdminController::class, 'assignRole']);
+
 });
 
 
