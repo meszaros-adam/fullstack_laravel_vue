@@ -58,19 +58,12 @@ export default {
       },
       isSending: false,
       roles: [],
-      resources: [{resourceName: 'Tags', read: false, write: false, update: false, delete: false,name: 'tags'},
-                  {resourceName: 'Category', read: false, write: false, update: false, delete: false,name: 'category'},
-                  {resourceName: 'Adminuser', read: false, write: false, update: false, delete: false,name: 'adminuser'},
-                  {resourceName: 'Role', read: false, write: false, update: false, delete: false,name: 'role'},
-                  {resourceName: 'AssignRole', read: false, write: false, update: false, delete: false,name: 'assignRole'},
-                  {resourceName: 'Home', read: false, write: false, update: false, delete: false,name: 'home'}
-                  ],
       defaultResources: [{resourceName: 'Tags', read: false, write: false, update: false, delete: false,name: 'tags'},
                   {resourceName: 'Category', read: false, write: false, update: false, delete: false,name: 'category'},
-                  {resourceName: 'Adminuser', read: false, write: false, update: false, delete: false,name: 'adminuser'},
+                  {resourceName: 'Adminuser', read: false, write: false, update: false, delete: false,name: 'adminusers'},
                   {resourceName: 'Role', read: false, write: false, update: false, delete: false,name: 'role'},
-                  {resourceName: 'AssignRole', read: false, write: false, update: false, delete: false,name: 'assignRole'},
-                  {resourceName: 'Home', read: false, write: false, update: false, delete: false,name: 'home'}
+                  {resourceName: 'AssignRole', read: false, write: false, update: false, delete: false,name: 'assign-role'},
+                  {resourceName: 'Home', read: false, write: false, update: false, delete: false,name: '/'}
                   ],
     };
   },

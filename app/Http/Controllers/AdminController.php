@@ -21,16 +21,29 @@ class AdminController extends Controller
             return view('welcome');
         }
 
-        //you are alredy logged in so check for if you are an admin user...
+        //you are already logged in so check for if you are an admin user...
         $user = Auth::user();
 
-        if($user->role->isAdmin == 0){
-            return redirect('/login');
-        }
         if($request->path() == 'login'){
             return redirect('/');
         }
-        return view('welcome');
+        return $this->checkForPermission($user, $request);
+                
+    }
+    public function checkForPermission($user, $request){
+         $permission = json_decode($user->role->permission);
+
+         $hasPermission = false;
+         foreach($permission as $p){
+             if($p->name == $request->path() && $p->read == true){
+                $hasPermission = true;
+             }
+        }
+        if($hasPermission){
+            return view('welcome');
+        }else{
+            return view('notfound');
+        }
     }
     public function logout(){
         Auth::logout();
