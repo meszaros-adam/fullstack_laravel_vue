@@ -7248,12 +7248,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['user'],
+  props: ['user', 'permission'],
   data: function data() {
     return {
       isLogedIn: false
@@ -7261,6 +7257,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     this.$store.commit('updateUser', this.user);
+    console.log(this.permission[0]);
   }
 });
 
@@ -81076,115 +81073,47 @@ var render = function () {
                 _vm._m(1),
                 _vm._v(" "),
                 _c("div", { staticClass: "_1side_menu_list" }, [
-                  _c("ul", { staticClass: "_1side_menu_list_ul" }, [
-                    _c(
-                      "li",
-                      [
+                  _c(
+                    "ul",
+                    { staticClass: "_1side_menu_list_ul" },
+                    [
+                      _vm._l(_vm.permission, function (menuItem, i) {
+                        return menuItem.read
+                          ? _c(
+                              "li",
+                              { key: i },
+                              [
+                                _c(
+                                  "router-link",
+                                  { attrs: { to: menuItem.name } },
+                                  [
+                                    _c("Icon", {
+                                      attrs: { type: "ios-speedometer" },
+                                    }),
+                                    _vm._v(" " + _vm._s(menuItem.resourceName)),
+                                  ],
+                                  1
+                                ),
+                              ],
+                              1
+                            )
+                          : _vm._e()
+                      }),
+                      _vm._v(" "),
+                      _c("li", [
                         _c(
-                          "router-link",
-                          { attrs: { to: "/" } },
+                          "a",
+                          { attrs: { href: "/logout" } },
                           [
-                            _c("Icon", { attrs: { type: "ios-speedometer" } }),
-                            _vm._v(" Dashboard"),
+                            _c("Icon", { attrs: { type: "ios-exit-outline" } }),
+                            _vm._v(" Logout"),
                           ],
                           1
                         ),
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "li",
-                      [
-                        _c(
-                          "router-link",
-                          { attrs: { to: "tags" } },
-                          [
-                            _c("Icon", { attrs: { type: "ios-speedometer" } }),
-                            _vm._v(" Tags"),
-                          ],
-                          1
-                        ),
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "li",
-                      [
-                        _c(
-                          "router-link",
-                          { attrs: { to: "category" } },
-                          [
-                            _c("Icon", { attrs: { type: "ios-speedometer" } }),
-                            _vm._v(" Category"),
-                          ],
-                          1
-                        ),
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "li",
-                      [
-                        _c(
-                          "router-link",
-                          { attrs: { to: "adminusers" } },
-                          [
-                            _c("Icon", { attrs: { type: "ios-speedometer" } }),
-                            _vm._v(" Admin users"),
-                          ],
-                          1
-                        ),
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "li",
-                      [
-                        _c(
-                          "router-link",
-                          { attrs: { to: "role" } },
-                          [
-                            _c("Icon", { attrs: { type: "ios-speedometer" } }),
-                            _vm._v(" Role Management"),
-                          ],
-                          1
-                        ),
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "li",
-                      [
-                        _c(
-                          "router-link",
-                          { attrs: { to: "assign-role" } },
-                          [
-                            _c("Icon", { attrs: { type: "ios-speedometer" } }),
-                            _vm._v(" Assign Role"),
-                          ],
-                          1
-                        ),
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c("li", [
-                      _c(
-                        "a",
-                        { attrs: { href: "/logout" } },
-                        [
-                          _c("Icon", { attrs: { type: "ios-exit-outline" } }),
-                          _vm._v(" Logout"),
-                        ],
-                        1
-                      ),
-                    ]),
-                  ]),
+                      ]),
+                    ],
+                    2
+                  ),
                 ]),
               ]),
             ]),

@@ -32,7 +32,6 @@ class AdminController extends Controller
     }
     public function checkForPermission($user, $request){
          $permission = json_decode($user->role->permission);
-
          $hasPermission = false;
          foreach($permission as $p){
              if($p->name == $request->path() && $p->read == true){
@@ -201,7 +200,7 @@ class AdminController extends Controller
             if($user->role->isAdmin == 0){
                 Auth::logout();
                 return response()->json([
-                    'msg' => 'Incorrect login details',
+                    'msg' => 'You cannot login, becouse you are not admin',
                     'User' => $user,
                     ],401);
             }
