@@ -4,7 +4,7 @@
 			<div class="container-fluid">
 				<!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
 				<div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
-					<p class="_title0">Admin users<Button @click="addModal=true"><Icon type="md-add"></Icon>Add user</Button></p> 
+					<p class="_title0">Admin users<Button @click="addModal=true" v-if="isWritePermitted"><Icon type="md-add"></Icon>Add user</Button></p> 
 					<div class="_overflow _table_div">
 						<table class="_table">
 								<!-- TABLE TITLE -->
@@ -27,8 +27,8 @@
                                 <td>{{user.role_id}}</td>
                                 <td>{{user.created_at}}</td>
 								<td>
-									<Button @click="showEditModal(user, i)" type="info" size="small">Edit</Button>
-									<Button @click="showDeleteModal(user, i)" type="error" size="small" :loading="isDeleting">Delete</Button>
+									<Button @click="showEditModal(user, i)" type="info" size="small" v-if="isUpdatePermitted">Edit</Button>
+									<Button @click="showDeleteModal(user, i)" type="error" size="small" :loading="isDeleting" v-if="isDeletePermitted">Delete</Button>
 								</td>
 							</tr>
 

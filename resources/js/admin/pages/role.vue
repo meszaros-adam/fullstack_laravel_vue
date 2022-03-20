@@ -14,8 +14,7 @@
         >
           <p class="_title0">
             Role Management
-            <Button @click="addModal = true"
-              ><Icon type="md-add"></Icon>Add role</Button
+            <Button @click="addModal = true" v-if="isWritePermitted"><Icon type="md-add"></Icon>Add role</Button
             >
           </p>
           <div class="_overflow _table_div">
@@ -39,12 +38,14 @@
                     @click="showEditModal(role, i)"
                     type="info"
                     size="small"
+                    v-if="isUpdatePermitted"
                     >Edit</Button
                   >
                   <Button
                     @click="showDeleteModal(role, i)"
                     type="error"
                     size="small"
+                    v-if="isDeletePermitted"
                     >Delete</Button
                   >
                 </td>

@@ -31,7 +31,7 @@
               <!-- TABLE TITLE -->
 
               <!-- ITEMS -->
-              <tr v-for="(r,i) in resources" :key="i">
+              <tr v-for="(r,i) in resources" :key="i" v-if="resources">
                 <td>{{r.resourceName}}</td>
                 <td><Checkbox v-model="r.read"></Checkbox></td>
                 <td><Checkbox v-model="r.write"></Checkbox></td>
@@ -58,6 +58,7 @@ export default {
       },
       isSending: false,
       roles: [],
+      resources: null,
       defaultResources: [{resourceName: 'Tags', read: false, write: false, update: false, delete: false,name: 'tags'},
                   {resourceName: 'Category', read: false, write: false, update: false, delete: false,name: 'category'},
                   {resourceName: 'Adminuser', read: false, write: false, update: false, delete: false,name: 'adminusers'},

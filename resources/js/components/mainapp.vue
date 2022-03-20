@@ -12,7 +12,7 @@
         <div class="_1side_menu_content">
           <div class="_1side_menu_img_name">
             <!-- <img class="_1side_menu_img" src="/pic.png" alt="" title=""> -->
-            <p class="_1side_menu_name">Admin</p>
+            <p class="_1side_menu_name">{{user.fullName}}</p>
           </div>
 
           <!--~~~ MENU LIST ~~~~~~-->
@@ -57,8 +57,8 @@ export default{
     }
   },
   created(){
-    this.$store.commit('updateUser', this.user)
-    console.log(this.permission[0])
+    this.$store.commit('setUpdateUser', this.user)
+    this.$store.commit('setUserPermission', this.permission)
   }
 }
 </script>

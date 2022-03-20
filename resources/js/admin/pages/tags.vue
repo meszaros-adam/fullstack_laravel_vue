@@ -4,7 +4,7 @@
 			<div class="container-fluid">
 				<!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
 				<div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
-					<p class="_title0">Tags <Button @click="addModal=true"><Icon type="md-add"></Icon>Add tag</Button></p> 
+					<p class="_title0">Tags <Button @click="addModal=true" v-if="isWritePermitted"><Icon type="md-add"></Icon>Add tag</Button></p> 
 					<div class="_overflow _table_div">
 						<table class="_table">
 								<!-- TABLE TITLE -->
@@ -23,8 +23,8 @@
 								<td class="_table_name">{{tag.tagName}}</td>
 								<td>{{tag.created_at}}</td>
 								<td>
-									<Button @click="showEditModal(tag, i)" type="info" size="small">Edit</Button>
-									<Button @click="showDeleteModal(tag, i)" type="error" size="small">Delete</Button>
+									<Button @click="showEditModal(tag, i)" v-if="isUpdatePermitted" type="info" size="small">Edit</Button>
+									<Button @click="showDeleteModal(tag, i)" v-if="isDeletePermitted" type="error" size="small">Delete</Button>
 								</td>
 							</tr>
 
@@ -157,6 +157,7 @@ export default {
 		},
 	},
 	async created(){
+		console.log(this.isReadPermitted)
 		const res = await this.callApi('get', 'app/get_tags')
 		if(res.status==200){
 			this.tags = res.data

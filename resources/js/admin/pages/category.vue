@@ -4,7 +4,7 @@
 			<div class="container-fluid">
 				<!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
 				<div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
-					<p class="_title0">Category <Button @click="showAddModal()"><Icon type="md-add"></Icon>Add category</Button></p> 
+					<p class="_title0">Category <Button @click="showAddModal()" v-if="isWritePermitted"><Icon type="md-add"></Icon>Add category</Button></p> 
 					<div class="_overflow _table_div">
 						<table class="_table">
 								<!-- TABLE TITLE -->
@@ -27,8 +27,8 @@
 								<td class="_table_name">{{category.categoryName}}</td>
 								<td>{{category.created_at}}</td>
 								<td>
-									<Button @click="showEditModal(category, i)" type="info" size="small">Edit</Button>
-									<Button @click="showDeleteModal(category, i)" type="error" size="small">Delete</Button>
+									<Button @click="showEditModal(category, i)" type="info" size="small" v-if="isUpdatePermitted">Edit</Button>
+									<Button @click="showDeleteModal(category, i)" type="error" size="small" v-if="isDeletePermitted">Delete</Button>
 								</td>
 							</tr>
 
