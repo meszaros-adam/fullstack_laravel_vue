@@ -59,11 +59,14 @@ export default {
       isSending: false,
       roles: [],
       resources: null,
-      defaultResources: [{resourceName: 'Tags', read: false, write: false, update: false, delete: false,name: 'tags'},
+      defaultResources: [
+                  {resourceName: 'Home', read: false, write: false, update: false, delete: false,name: '/'},
+                  {resourceName: 'Tags', read: false, write: false, update: false, delete: false,name: 'tags'},
                   {resourceName: 'Category', read: false, write: false, update: false, delete: false,name: 'category'},
+                  {resourceName: 'Create Blog', read: false, write: false, update: false, delete: false,name: 'create-blog'},
                   {resourceName: 'Adminuser', read: false, write: false, update: false, delete: false,name: 'adminusers'},
                   {resourceName: 'Role', read: false, write: false, update: false, delete: false,name: 'role'},
-                  {resourceName: 'AssignRole', read: false, write: false, update: false, delete: false,name: 'assign-role'},
+                  {resourceName: 'Assign Role', read: false, write: false, update: false, delete: false,name: 'assign-role'},
                   {resourceName: 'Home', read: false, write: false, update: false, delete: false,name: '/'}
                   ],
     };

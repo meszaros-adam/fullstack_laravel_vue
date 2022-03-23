@@ -14,6 +14,7 @@ import adminusers from './admin/pages/adminusers'
 import login from './admin/pages/login'
 import role from './admin/pages/role'
 import assignRole from './admin/pages/assignRole'
+import createBlog from './admin/pages/createBlog'
 
 
 Vue.use(Router)
@@ -53,8 +54,13 @@ const routes = [
     {
         path:'/assign-role',
         component: assignRole,
-        name: 'assignRole'
-    },     
+        name: 'assign-role'
+    },    
+    {
+        path:'/create-blog',
+        component: createBlog,
+        name: 'create-blog'
+    },      
     //basic tutorial routes
     {
         path:'/first-page',
