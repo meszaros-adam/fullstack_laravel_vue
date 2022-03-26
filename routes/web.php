@@ -20,6 +20,7 @@ Route::prefix('app')->middleware([AdminCheck::class])->group(function(){
     Route::post('/edit_tag',[App\Http\Controllers\AdminController::class, 'editTag']);
     Route::post('/delete_tag',[App\Http\Controllers\AdminController::class, 'deleteTag']);
     Route::post('/upload',[App\Http\Controllers\AdminController::class, 'upload']);
+    Route::post('/upload_editor_pic',[App\Http\Controllers\AdminController::class, 'uploadEditorPic']);
     Route::post('/delete_image',[App\Http\Controllers\AdminController::class, 'deleteImage']);
     Route::post('/create_category',[App\Http\Controllers\AdminController::class, 'addCategory']);
     Route::get('/get_category',[App\Http\Controllers\AdminController::class, 'getCategory']);

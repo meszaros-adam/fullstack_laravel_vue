@@ -89,6 +89,14 @@ class AdminController extends Controller
         $request->file->move(public_path('uploads'), $picName);
         return $picName;
     }
+    public function uploadEditorPic(Request $request){
+        $this->validate($request,[
+            'image' => 'required|mimes:jpg,jpeg,png'
+        ]);
+        $picName = time().'.'.$request->image->extension();
+        $request->image->move(public_path('uploads'), $picName);
+        return $picName;
+    }
     public function deleteImage(Request $request){
         $fileName = $request->imageName;
         $this->deleteFileFromServer($fileName);

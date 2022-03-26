@@ -13,42 +13,29 @@
           "
         >
           <p class="_title0">
-            Role Management
-            <Button @click="addModal = true" v-if="isWritePermitted"><Icon type="md-add"></Icon>Add role</Button
+            Create Blog
+            <Button @click="addModal = true" v-if="isWritePermitted"><Icon type="md-add"></Icon>Add Blog</Button
             >
           </p>
           <div class="_overflow _table_div">
-            	<editor 
+            <div class="space">
+              <Input v-model="data.title" placeholder="Add title"></Input>
+            </div>
+            <div class="space">
+              <vue-editor
                 ref="editor"
-                autofocus
-                holder-id="codex-editor"
-                save-button-id="save-button"
-                :init-data="initData"
-                @save="onSave"
-                :config="{
-                    tools: {
-                      header: require('@editorjs/header'),
-                      list: require('@editorjs/list'),
-                      code: require('@editorjs/code'),
-                      inlineCode: require('@editorjs/inline-code'),
-                      personality: require('@editorjs/personality'),
-                      embed: require('@editorjs/embed'),
-                      link: require('@editorjs/link'),
-                      marker: require('@editorjs/marker'),
-                      table: require('@editorjs/table'),
-                      raw: require('@editorjs/raw'),
-                      delimiter: require('@editorjs/delimiter'),
-                      quote: require('@editorjs/quote'),
-                      image: require('@editorjs/image'),
-                      warning: require('@editorjs/warning'),
-                      paragraph: require('@editorjs/paragraph'),
-                      checklist: require('@editorjs/checklist'),
-                    }
-                }"
-
-              />
-
-		          <Button id="save-button" @click="save">Save the data</Button>
+                id="editor"
+                :editorOptions="editorSettings"
+                useCustomImageHandler
+                @image-added="handleImageAdded"
+                v-model="data.content"
+                placeholder="Write some text"
+              >
+              </vue-editor>
+            </div>
+            <div class="space">
+              <Button @click="save">Save</Button>
+            </div>
           </div>
         </div>
       </div>
@@ -57,19 +44,31 @@
 </template>
 
 <script>
+import { VueEditor, Quill } from "vue2-editor";
+import { ImageDrop } from "quill-image-drop-module";
+import QuillResize from 'quill-resize-module';
+
+Quill.register("modules/imageDrop", ImageDrop);
+Quill.register("modules/resize", QuillResize);
+
 
 export default {
+  components: {
+    VueEditor
+  },
   data() {
     return {
-       config: {
-        image: {
-          // Like in https://github.com/editor-js/image#config-params
-          field: 'image',
-          types: 'image/*',
-        },
+      data:{
+        content: "",
+        title: ''
       },
-      initData: null,
-      data: {
+      editorSettings: {
+        modules: {
+          imageDrop: true,
+          resize: {
+            modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
+        }
+        }
       }
     }
   },
@@ -95,14 +94,26 @@ export default {
       }
       this.isAdding = false;
     },
-    onSave(response){
-      console.log('response on save: ',response)
-    },
     async save(){
-      const res = await this.$refs.editor._data.state.editor.save()
-      console.log('res is tis: ', res)
-    }
+    },
+    async handleImageAdded (file, Editor, cursorLocation, resetUploader) {
+      // An example of using FormData
+      // NOTE: Your key could be different such as:
+      // formData.append('file', file)
 
+      var formData = new FormData();
+      formData.append("image", file);
+      const res = await this.callApi('post','/app/upload_editor_pic', formData )
+      console.log(res)
+      if(res.status == 200) {
+        const url = `/uploads/${res.data}`
+        Editor.insertEmbed(cursorLocation, "image", url)
+        resetUploader()
+      }
+      else{
+        this.swr()
+      }
+    }
   }
 }
 </script>
