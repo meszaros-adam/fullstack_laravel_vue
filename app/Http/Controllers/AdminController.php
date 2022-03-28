@@ -7,7 +7,9 @@ use App\Models\Tag;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Blog;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -254,4 +256,31 @@ class AdminController extends Controller
             'permission' => $request->permission
         ]);
     }
+    public function addBlog(Request $request){
+        $this->validate($request, [
+            'title' => 'required',
+            'post' => 'required',
+        ]);
+        return Blog::Create([
+            'title' => $request->title,
+            'post' => $request->post,
+        ]);
+    }
+    public function slug(Request $request){
+        $title = 'New title';
+        return Blog::create([
+            'title' => $title,
+            'post' => 'some post',
+            'post_excerpt' => 'ahead',
+            'metaDescription' => 'ahead', 
+            'user_id' => 1,
+            'slug' => $this->uniqueSlug($title),
+        ]);
+    }
+    private function uniqueSlug($title){
+        $slug = Str::slug($title, '-');
+        $count = Blog::where('slug', 'LIKE', "{$slug}%")->count();
+        $newCount = $count > 0 ? ++$count : 0;
+        return $newCount > 0 ? "$slug-$newCount" : $slug;
+    } 
 }

@@ -28,13 +28,13 @@
                 :editorOptions="editorSettings"
                 useCustomImageHandler
                 @image-added="handleImageAdded"
-                v-model="data.content"
-                placeholder="Write some text"
+                v-model="data.post"
+                placeholder="Write your post"
               >
               </vue-editor>
             </div>
             <div class="space">
-              <Button @click="save">Save</Button>
+              <Button @click="add" :loading="isAdding" :disabled="isAdding">Save</Button>
             </div>
           </div>
         </div>
@@ -59,7 +59,7 @@ export default {
   data() {
     return {
       data:{
-        content: "",
+        post: "",
         title: ''
       },
       editorSettings: {
@@ -69,32 +69,17 @@ export default {
             modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
         }
         }
-      }
+      },
+      isAdding: false,
     }
   },
   methods: {
     async add() {
-      if (this.data.roleName.trim() == "")
-        return this.error("Role name is required");
+      if (this.data.title.trim() == "") return this.error("Title is required")
+      if (this.data.post.trim() == "") return this.error("Post is required")
       this.isAdding = true;
-      const res = await this.callApi("post", "app/create_role", this.data);
-      if (res.status === 201) {
-        this.roles.unshift(res.data);
-        this.success("Role has been added succesfully");
-        this.addModal = false;
-        this.data.roleName = "";
-      } else {
-        if (res.status == 422) {
-          if (res.data.errors.RoleName) {
-            this.error(res.data.errors.RoleName[0]);
-          }
-        } else {
-          this.swr();
-        }
-      }
+      const res = await this.callApi("post", "app/create_blog", this.data)
       this.isAdding = false;
-    },
-    async save(){
     },
     async handleImageAdded (file, Editor, cursorLocation, resetUploader) {
       // An example of using FormData
