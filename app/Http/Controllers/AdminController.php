@@ -260,21 +260,16 @@ class AdminController extends Controller
         $this->validate($request, [
             'title' => 'required',
             'post' => 'required',
+            'post_excerpt' => 'required',
+            'metaDescription' => 'required',
         ]);
-        return Blog::Create([
+        return Blog::create([
             'title' => $request->title,
             'post' => $request->post,
-        ]);
-    }
-    public function slug(Request $request){
-        $title = 'New title';
-        return Blog::create([
-            'title' => $title,
-            'post' => 'some post',
-            'post_excerpt' => 'ahead',
-            'metaDescription' => 'ahead', 
-            'user_id' => 1,
-            'slug' => $this->uniqueSlug($title),
+            'post_excerpt' => $request->post_excerpt,
+            'metaDescription' => $request->metaDescription, 
+            'user_id' => Auth::user()->id,
+            'slug' => $this->uniqueSlug($request->title),
         ]);
     }
     private function uniqueSlug($title){

@@ -34,7 +34,18 @@
               </vue-editor>
             </div>
             <div class="space">
-              <Button @click="add" :loading="isAdding" :disabled="isAdding">Save</Button>
+              <Input v-model="data.post_excerpt" type="textarea"  :autosize="{minRows: 2,maxRows: 5}" placeholder="Add Post Excerpt"/>
+            </div>
+            <div class="space">
+                <Select v-model="data.category_id" placeholder="Select category" filterable multiple>
+							<Option :value="category.id" v-for="(category, i) in categoryList" :key="i" >{{category.categoryName}}</Option> 
+                </Select>
+            </div>
+             <div class="space">
+              <Input v-model="data.metaDescription" type="textarea"  :autosize="{minRows: 2,maxRows: 5}" placeholder="Add meta description"/>
+            </div>
+            <div class="space">
+              <Button @click="add" :loading="isAdding" :disabled="isAdding">{{isAdding ? 'Saving blog' : 'Save'}}</Button>
             </div>
           </div>
         </div>
@@ -60,8 +71,14 @@ export default {
     return {
       data:{
         post: "",
-        title: ''
+        title: '',
+        category_id: [],
+        post_excerpt: '',
+        metaDescription: '',
+
       },
+      isAdding: false,
+      categoryList: [],
       editorSettings: {
         modules: {
           imageDrop: true,
@@ -70,15 +87,22 @@ export default {
         }
         }
       },
-      isAdding: false,
     }
   },
   methods: {
     async add() {
       if (this.data.title.trim() == "") return this.error("Title is required")
       if (this.data.post.trim() == "") return this.error("Post is required")
+      if (this.data.post_excerpt.trim() == "") return this.error("Post excerpt is required")
+      if (this.data.metaDescription.trim() == "") return this.error("Meta description is required")
       this.isAdding = true;
       const res = await this.callApi("post", "app/create_blog", this.data)
+      if (res.status==201){
+        this.success('Blog has been created succesfully')
+        //redirect...
+      }else{
+        this.swr()
+      }
       this.isAdding = false;
     },
     async handleImageAdded (file, Editor, cursorLocation, resetUploader) {
@@ -98,7 +122,16 @@ export default {
       else{
         this.swr()
       }
+    },
+  },
+  async created(){
+      const res = await this.callApi('get', 'app/get_category')
+      if (res.status == 200) {
+      this.categoryList = res.data;
+    } else {
+      this.swr();
     }
-  }
+
+    }
 }
 </script>
