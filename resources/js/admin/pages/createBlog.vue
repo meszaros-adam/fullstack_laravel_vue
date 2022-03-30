@@ -97,7 +97,7 @@ export default {
       if (this.data.metaDescription.trim() == "") return this.error("Meta description is required")
       this.isAdding = true;
       const res = await this.callApi("post", "app/create_blog", this.data)
-      if (res.status==201){
+      if (res.status==200){
         this.success('Blog has been created succesfully')
         //redirect...
       }else{

@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Blog;
+use App\Models\Blogcategory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -263,7 +264,7 @@ class AdminController extends Controller
             'post_excerpt' => 'required',
             'metaDescription' => 'required',
         ]);
-        return Blog::create([
+        $blog = Blog::create([
             'title' => $request->title,
             'post' => $request->post,
             'post_excerpt' => $request->post_excerpt,
@@ -271,6 +272,8 @@ class AdminController extends Controller
             'user_id' => Auth::user()->id,
             'slug' => $this->uniqueSlug($request->title),
         ]);
+
+        $this->createBlogcategories($request->category_id, $blog->id);        
     }
     private function uniqueSlug($title){
         $slug = Str::slug($title, '-');
@@ -278,4 +281,14 @@ class AdminController extends Controller
         $newCount = $count > 0 ? ++$count : 0;
         return $newCount > 0 ? "$slug-$newCount" : $slug;
     } 
+    private function createBlogcategories($categories, $blog_id){
+        $blog_categories = [];
+        foreach($categories as $c){
+           array_push($blog_categories, [
+                'category_id' => $c,
+                'blog_id'	=> $blog_id,
+            ]);
+        };
+        Blogcategory::insert($blog_categories);
+    }
 }
