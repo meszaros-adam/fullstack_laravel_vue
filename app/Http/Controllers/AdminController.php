@@ -12,6 +12,7 @@ use App\Models\Blogcategory;
 use App\Models\Blogtag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -265,17 +266,42 @@ class AdminController extends Controller
             'post_excerpt' => 'required',
             'metaDescription' => 'required',
         ]);
-        $blog = Blog::create([
-            'title' => $request->title,
-            'post' => $request->post,
-            'post_excerpt' => $request->post_excerpt,
-            'metaDescription' => $request->metaDescription, 
-            'user_id' => Auth::user()->id,
-            'slug' => $this->uniqueSlug($request->title),
-        ]);
 
-        $this->createBlogcategories($request->category_id, $blog->id);   
-        $this->createBlogtags($request->tag_id, $blog->id);       
+    DB::beginTransaction();
+        try{
+            $blog = Blog::create([
+                'title' => $request->title,
+                'post' => $request->post,
+                'post_excerpt' => $request->post_excerpt,
+                'metaDescription' => $request->metaDescription, 
+                'user_id' => Auth::user()->id,
+                'slug' => $this->uniqueSlug($request->title),
+            ]);
+
+            $blog_categories = [];
+            foreach($request->category_id as $c){
+            array_push($blog_categories, [
+                    'category_id' => $c,
+                    'blog_id'	=> $blog->id,
+                ]);
+            };
+            Blogcategory::insert($blog_categories);
+
+            $blog_tags = [];
+            foreach($request->tag_id as $t){
+            array_push($blog_tags, [
+                    'tag_id' => $t,
+                    'blog_id'	=> $blog->id,
+                ]);
+            };
+            Blogtag::insert($blog_tags);
+            
+            DB::commit();
+            return 'done';
+        }catch(\Throwable $th){
+            DB::rollback();
+            return response ('not done', 500);
+        }
     }
     private function uniqueSlug($title){
         $slug = Str::slug($title, '-');
@@ -283,24 +309,4 @@ class AdminController extends Controller
         $newCount = $count > 0 ? ++$count : 0;
         return $newCount > 0 ? "$slug-$newCount" : $slug;
     } 
-    private function createBlogcategories($categories, $blog_id){
-        $blog_categories = [];
-        foreach($categories as $c){
-           array_push($blog_categories, [
-                'category_id' => $c,
-                'blog_id'	=> $blog_id,
-            ]);
-        };
-        Blogcategory::insert($blog_categories);
-    }
-    private function createBlogtags($tags, $blog_id){
-        $blog_tags = [];
-        foreach($tags as $t){
-           array_push($blog_tags, [
-                'tag_id' => $t,
-                'blog_id'	=> $blog_id,
-            ]);
-        };
-        Blogtag::insert($blog_tags);
-    }
 }
