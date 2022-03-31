@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Blog;
 use App\Models\Blogcategory;
+use App\Models\Blogtag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -273,7 +274,8 @@ class AdminController extends Controller
             'slug' => $this->uniqueSlug($request->title),
         ]);
 
-        $this->createBlogcategories($request->category_id, $blog->id);        
+        $this->createBlogcategories($request->category_id, $blog->id);   
+        $this->createBlogtags($request->tag_id, $blog->id);       
     }
     private function uniqueSlug($title){
         $slug = Str::slug($title, '-');
@@ -290,5 +292,15 @@ class AdminController extends Controller
             ]);
         };
         Blogcategory::insert($blog_categories);
+    }
+    private function createBlogtags($tags, $blog_id){
+        $blog_tags = [];
+        foreach($tags as $t){
+           array_push($blog_tags, [
+                'tag_id' => $t,
+                'blog_id'	=> $blog_id,
+            ]);
+        };
+        Blogtag::insert($blog_tags);
     }
 }
