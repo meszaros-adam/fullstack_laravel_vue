@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Blogtag extends Model
+class BlogTag extends Model
 {
     use HasFactory;
     protected $fillable = ['blog_id', 'tag_id'];

@@ -39,6 +39,8 @@ Route::prefix('app')->middleware([AdminCheck::class])->group(function(){
     Route::post('/assign_role',[App\Http\Controllers\AdminController::class, 'assignRole']);
 });
 
+Route::get('/blogdata', [App\Http\Controllers\AdminController::class, 'blogData']);
+
 Route::get('/logout',[App\Http\Controllers\AdminController::class, 'logout']);
 Route::get('/',[App\Http\Controllers\AdminController::class, 'index']);
 Route::any('{slug}',[App\Http\Controllers\AdminController::class, 'index']);

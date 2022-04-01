@@ -8,8 +8,8 @@ use App\Models\Category;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Blog;
-use App\Models\Blogcategory;
-use App\Models\Blogtag;
+use App\Models\BlogCategory;
+use App\Models\BlogTag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -285,7 +285,7 @@ class AdminController extends Controller
                     'blog_id'	=> $blog->id,
                 ]);
             };
-            Blogcategory::insert($blog_categories);
+            BlogCategory::insert($blog_categories);
 
             $blog_tags = [];
             foreach($request->tag_id as $t){
@@ -294,13 +294,13 @@ class AdminController extends Controller
                     'blog_id'	=> $blog->id,
                 ]);
             };
-            Blogtag::insert($blog_tags);
+            BlogTag::insert($blog_tags);
             
             DB::commit();
             return 'done';
         }catch(\Throwable $th){
             DB::rollback();
-            return response ('not done', 500);
+            return response ($th, 500);
         }
     }
     private function uniqueSlug($title){
@@ -309,4 +309,7 @@ class AdminController extends Controller
         $newCount = $count > 0 ? ++$count : 0;
         return $newCount > 0 ? "$slug-$newCount" : $slug;
     } 
+    public function blogData(){
+        return Blog::with(['categories' , 'tags'])->get();
+    }
 }
