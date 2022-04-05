@@ -104,9 +104,9 @@ export default {
       if (this.data.category_id.length == 0) return this.error("Category is required")
       if (this.data.tag_id.length == 0) return this.error("Tag is required")
       this.isEditing = true;
-      const res = await this.callApi("post", "app/update_blog", this.data)
+      const res = await this.callApi("post", "/app/edit_blog", this.data)
       if (res.status==200){
-        this.success('Blog has been created succesfully')
+        this.success('Blog has been edited succesfully')
         //redirect...
         this.$router.push('/blogs')
       }else{

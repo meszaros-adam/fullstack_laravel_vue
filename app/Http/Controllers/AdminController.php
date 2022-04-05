@@ -333,8 +333,46 @@ class AdminController extends Controller
             'tag_id' => 'required',
         ]);
 
-        return Blog::where('id', $request->id)-update([
+        DB::beginTransaction();
+        try {
+            Blog::where('id', $request->id)->update([
+                'title' => $request->title,
+                'post' => $request->post,
+                'post_excerpt' => $request->post_excerpt,
+                'metaDescription' => $request->metaDescription, 
+                'user_id' => Auth::user()->id,
+                'slug' => $this->uniqueSlug($request->title),
+            ]);
 
-        ]);
+            //delete previous categories and tags
+            BlogCategory::where('blog_id', $request->id)->delete();
+            BlogTag::where('blog_id', $request->id)->delete();
+
+            //add categories and tags
+            $blog_categories = [];
+            foreach($request->category_id as $c){
+            array_push($blog_categories, [
+                    'category_id' => $c,
+                    'blog_id'	=> $request->id,
+                ]);
+            };
+            BlogCategory::insert($blog_categories);
+
+            $blog_tags = [];
+            foreach($request->tag_id as $t){
+            array_push($blog_tags, [
+                    'tag_id' => $t,
+                    'blog_id'	=> $request->id,
+                ]);
+            };
+            BlogTag::insert($blog_tags);
+
+            DB::commit();
+        } catch (\Throwable $th) {
+            //throw $th;
+            DB::rollback();
+            return response ($th, 500);
+        }
+        
     }
 }
