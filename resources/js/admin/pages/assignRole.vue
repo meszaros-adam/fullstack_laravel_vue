@@ -68,7 +68,6 @@ export default {
                   {resourceName: 'Adminuser', read: false, write: false, update: false, delete: false,name: 'adminusers'},
                   {resourceName: 'Role', read: false, write: false, update: false, delete: false,name: 'role'},
                   {resourceName: 'Assign Role', read: false, write: false, update: false, delete: false,name: 'assign-role'},
-                  {resourceName: 'Home', read: false, write: false, update: false, delete: false,name: '/'}
                   ],
     };
   },

@@ -140,6 +140,9 @@ export default {
       if (cat.status == 200  ) {
       this.categoryList = cat.data;
       }
+      else {
+        this.swr();
+      }
       if(tag.status == 200 ){
         this.tags = tag.data;
       }else {

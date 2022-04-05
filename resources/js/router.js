@@ -15,7 +15,9 @@ import login from './admin/pages/login'
 import role from './admin/pages/role'
 import assignRole from './admin/pages/assignRole'
 import createBlog from './admin/pages/createBlog'
+import editBlog from './admin/pages/editBlog'
 import blogs from './admin/pages/blogs'
+import notfound from './admin/pages/notfound'
 
 
 Vue.use(Router)
@@ -63,34 +65,20 @@ const routes = [
         name: 'create-blog'
     },     
     {
+        path:'/edit-blog/:id',
+        component: editBlog,
+        name: 'edit-blog'
+    },     
+    {
         path:'/blogs',
         component: blogs,
         name: 'blogs'
     },       
-    //basic tutorial routes
     {
-        path:'/first-page',
-        component: firstPage
-    },
-    {
-        path:'/new-route',
-        component: newRoute
-    },
-
-    //vue hooks
-    {
-        path: '/hooks',
-        component: hooks
-    },
-    //more basics
-    {
-        path: '/methods',
-        component: methods
-    },
-    {
-        path:'/testvuex',
-        component: use_component
-    },
+        path:'*',
+        component: notfound,
+        name: 'notfound'
+    },       
 ]
 
 export default new Router({

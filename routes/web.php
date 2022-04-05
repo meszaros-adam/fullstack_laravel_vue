@@ -42,7 +42,9 @@ Route::prefix('app')->middleware([AdminCheck::class])->group(function(){
     //blog
     Route::post('/create_blog',[App\Http\Controllers\AdminController::class, 'addBlog']);
     Route::get('/blogsdata', [App\Http\Controllers\AdminController::class, 'blogData']);
+    Route::get('/blog_single/{id}', [App\Http\Controllers\AdminController::class, 'getBlog']);
     Route::post('/delete_blog',[App\Http\Controllers\AdminController::class, 'deleteBlog']);
+    Route::post('/edit_blog',[App\Http\Controllers\AdminController::class, 'editBlog']);
 
     //role
     Route::post('/create_role',[App\Http\Controllers\AdminController::class, 'addRole']);

@@ -320,4 +320,21 @@ class AdminController extends Controller
         ]);
         return Blog::where('id', $request->id)->delete();              
     }
+    public function getBlog(Request $request, $id){
+        return Blog::with(['categories' , 'tags'])->where('id', $id)->get();
+    }
+    public function editBlog(Request $request){
+        $this->validate($request,[
+            'title' => 'required',
+            'post' => 'required',
+            'post_excerpt' => 'required',
+            'metaDescription' => 'required',
+            'category_id' => 'required',
+            'tag_id' => 'required',
+        ]);
+
+        return Blog::where('id', $request->id)-update([
+
+        ]);
+    }
 }
