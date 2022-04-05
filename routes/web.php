@@ -15,31 +15,43 @@ use App\Http\Middleware\AdminCheck;
 */
 
 Route::prefix('app')->middleware([AdminCheck::class])->group(function(){
+
+    //Tag
     Route::post('/create_tag',[App\Http\Controllers\AdminController::class, 'addTag']);
     Route::get('/get_tags',[App\Http\Controllers\AdminController::class, 'getTags']);
     Route::post('/edit_tag',[App\Http\Controllers\AdminController::class, 'editTag']);
     Route::post('/delete_tag',[App\Http\Controllers\AdminController::class, 'deleteTag']);
+
+    // pic
     Route::post('/upload',[App\Http\Controllers\AdminController::class, 'upload']);
     Route::post('/upload_editor_pic',[App\Http\Controllers\AdminController::class, 'uploadEditorPic']);
     Route::post('/delete_image',[App\Http\Controllers\AdminController::class, 'deleteImage']);
+
+    //category
     Route::post('/create_category',[App\Http\Controllers\AdminController::class, 'addCategory']);
     Route::get('/get_category',[App\Http\Controllers\AdminController::class, 'getCategory']);
     Route::post('/edit_category',[App\Http\Controllers\AdminController::class, 'editCategory']);
     Route::post('/delete_category',[App\Http\Controllers\AdminController::class, 'deleteCategory']);
+
+    //user
     Route::post('/create_user',[App\Http\Controllers\AdminController::class, 'addUser']);
     Route::post('/admin_login',[App\Http\Controllers\AdminController::class, 'adminLogin']);
     Route::get('/get_users',[App\Http\Controllers\AdminController::class, 'getUser']);
     Route::post('/edit_user',[App\Http\Controllers\AdminController::class, 'editUser']);
-    Route::post('/create_blog',[App\Http\Controllers\AdminController::class, 'addBlog']);
 
-    //role routes
+    //blog
+    Route::post('/create_blog',[App\Http\Controllers\AdminController::class, 'addBlog']);
+    Route::get('/blogsdata', [App\Http\Controllers\AdminController::class, 'blogData']);
+    Route::post('/delete_blog',[App\Http\Controllers\AdminController::class, 'deleteBlog']);
+
+    //role
     Route::post('/create_role',[App\Http\Controllers\AdminController::class, 'addRole']);
     Route::get('/get_roles',[App\Http\Controllers\AdminController::class, 'getRoles']);
     Route::post('/edit_role',[App\Http\Controllers\AdminController::class, 'editRole']);
     Route::post('/assign_role',[App\Http\Controllers\AdminController::class, 'assignRole']);
 });
 
-Route::get('/blogdata', [App\Http\Controllers\AdminController::class, 'blogData']);
+
 
 Route::get('/logout',[App\Http\Controllers\AdminController::class, 'logout']);
 Route::get('/',[App\Http\Controllers\AdminController::class, 'index']);

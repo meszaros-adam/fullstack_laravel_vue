@@ -280,9 +280,10 @@ export default {
 			const deleteModalObj = {
 				showDeleteModal: true,
 				deleteUrl: 'app/delete_category',
-				data: category,
+				data: {id: category.id},
 				deletingIndex: i,
-				objectType: 'category',
+				msg: 'Are you sure you want to delete this category?',
+                successMsg: 'Category has been deleted succesfully',
 			}
 			this.$store.commit('setDeletingModalObj', deleteModalObj)
 		},

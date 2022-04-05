@@ -149,9 +149,10 @@ export default {
 			const deleteModalObj = {
 				showDeleteModal: true,
 				deleteUrl: 'app/delete_tag',
-				data: tag,
+				data: {id: tag.id},
 				deletingIndex: i,
-				objectType: 'tag',
+				msg: 'Are you sure you want to delete this tag?',
+                successMsg: 'Tag has been deleted succesfully',
 			}
 			this.$store.commit('setDeletingModalObj', deleteModalObj)
 		},

@@ -196,13 +196,14 @@ export default {
 			this.editModal = true
 			this.editIndex = i
 		},
-		showDeleteModal(tag, i){
+		showDeleteModal(user, i){
 			const deleteModalObj = {
 				showDeleteModal: true,
 				deleteUrl: 'app/delete_tag',
-				data: tag,
+				data: {id: user.id},
 				deletingIndex: i,
-				objectType: 'tag',
+				msg: 'Are you sure you want to delete this user?',
+                successMsg: 'User has been deleted succesfully',
 			}
 			this.$store.commit('setDeletingModalObj', deleteModalObj)
 		},
@@ -234,7 +235,7 @@ export default {
 	watch: {
         getDeleteModalObj(obj){
             if(obj.isDeleted){
-				this.tags.splice(obj.deletingIndex, 1)
+				this.users.splice(obj.deletingIndex, 1)
 			}
         }
     },

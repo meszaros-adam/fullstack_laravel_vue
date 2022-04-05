@@ -12,8 +12,8 @@ export default new vuex.Store({
             data: null,
             deletingIndex: -1,
             isDeleted: false, 
-            //category or tag
-            objecType: '',
+            msg: '',
+            successMsg: '',
         },
         user: false,
         userPermission: null

@@ -191,10 +191,11 @@ export default {
     showDeleteModal(role, i) {
       const deleteModalObj = {
         showDeleteModal: true,
-        deleteUrl: "app/delete_Role",
-        data: role,
+        deleteUrl: "app/delete_role",
+        data: {id: role.id},
         deletingIndex: i,
-        objectType: "role",
+        msg: 'Are you sure you want to delete this role?',
+        successMsg: 'Role has been deleted succesfully',
       };
       this.$store.commit("setDeletingModalObj", deleteModalObj);
     },

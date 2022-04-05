@@ -265,6 +265,8 @@ class AdminController extends Controller
             'post' => 'required',
             'post_excerpt' => 'required',
             'metaDescription' => 'required',
+            'category_id' => 'required',
+            'tag_id' => 'required',
         ]);
 
     DB::beginTransaction();
@@ -310,6 +312,12 @@ class AdminController extends Controller
         return $newCount > 0 ? "$slug-$newCount" : $slug;
     } 
     public function blogData(){
-        return Blog::with(['categories' , 'tags'])->get();
+        return Blog::with(['categories' , 'tags'])->orderBy('id', 'desc')->get();
+    }
+    public function deleteBlog(Request $request){
+        $this->validate($request,[
+            'id' => 'required'
+        ]);
+        return Blog::where('id', $request->id)->delete();              
     }
 }

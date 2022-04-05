@@ -64,6 +64,7 @@ export default {
                   {resourceName: 'Tags', read: false, write: false, update: false, delete: false,name: 'tags'},
                   {resourceName: 'Category', read: false, write: false, update: false, delete: false,name: 'category'},
                   {resourceName: 'Create Blog', read: false, write: false, update: false, delete: false,name: 'create-blog'},
+                  {resourceName: 'Blogs', read: false, write: false, update: false, delete: false,name: 'blogs'},
                   {resourceName: 'Adminuser', read: false, write: false, update: false, delete: false,name: 'adminusers'},
                   {resourceName: 'Role', read: false, write: false, update: false, delete: false,name: 'role'},
                   {resourceName: 'Assign Role', read: false, write: false, update: false, delete: false,name: 'assign-role'},

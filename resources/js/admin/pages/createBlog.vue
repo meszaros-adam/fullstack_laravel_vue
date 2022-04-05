@@ -14,8 +14,6 @@
         >
           <p class="_title0">
             Create Blog
-            <Button @click="addModal = true" v-if="isWritePermitted"><Icon type="md-add"></Icon>Add Blog</Button
-            >
           </p>
           <div class="_overflow _table_div">
             <div class="space">
@@ -102,11 +100,14 @@ export default {
       if (this.data.post.trim() == "") return this.error("Post is required")
       if (this.data.post_excerpt.trim() == "") return this.error("Post excerpt is required")
       if (this.data.metaDescription.trim() == "") return this.error("Meta description is required")
+      if (this.data.category_id.length == 0) return this.error("Category is required")
+      if (this.data.tag_id.length == 0) return this.error("Tag is required")
       this.isAdding = true;
       const res = await this.callApi("post", "app/create_blog", this.data)
       if (res.status==200){
         this.success('Blog has been created succesfully')
         //redirect...
+        this.$router.push('/blogs')
       }else{
         this.swr()
       }
