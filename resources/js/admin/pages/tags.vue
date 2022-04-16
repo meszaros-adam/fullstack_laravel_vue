@@ -27,8 +27,10 @@
 									<Button @click="showDeleteModal(tag, i)" v-if="isDeletePermitted" type="error" size="small">Delete</Button>
 								</td>
 							</tr>
-
 						</table>
+					</div>
+					<div class="space">
+						<Page :total="paginateInfo.total" :current="paginateInfo.current_page"  :page-size="paginateInfo.per_page" @on-change="getTags" v-if="paginateInfo"/>
 					</div>
 				</div>
 
@@ -87,7 +89,8 @@ export default {
 			deleteItem: {
 				id: ''
 			},
-			deletingIndex: -1
+			deletingIndex: -1,
+			paginateInfo: null,
 		}
 	},
 	components: {
@@ -156,15 +159,18 @@ export default {
 			}
 			this.$store.commit('setDeletingModalObj', deleteModalObj)
 		},
+		async getTags(page=1){
+			const res = await this.callApi('get', `app/get_tags?page=${page}`)
+			if(res.status==200){
+				this.tags = res.data.data
+				this.paginateInfo = res.data
+			}else{
+				this.swr()
+			}
+		}
 	},
 	async created(){
-		console.log(this.isReadPermitted)
-		const res = await this.callApi('get', 'app/get_tags')
-		if(res.status==200){
-			this.tags = res.data
-		}else{
-			this.swr()
-		}
+		this.getTags()
 	},
 	computed: {
 		...mapGetters([

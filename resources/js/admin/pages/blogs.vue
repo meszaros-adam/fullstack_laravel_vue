@@ -2,6 +2,7 @@
     <div>
        <div class="content">
 			<div class="container-fluid">
+				
 				<!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
 				<div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
 					<p class="_title0">Blogs <Button @click="$router.push('create-blog')" v-if="isWritePermitted"><Icon type="md-add"></Icon>Add Blog</Button></p> 
@@ -18,7 +19,6 @@
 							</tr>
 								<!-- TABLE TITLE -->
 
-
 								<!-- ITEMS -->
 							<tr v-for="(blog, i) in blogs" :key="i" v-if="blogs.length">
 								<td>{{blog.id}}</td>
@@ -32,13 +32,13 @@
 									<Button @click="showDeleteModal(blog, i)" v-if="isDeletePermitted" type="error" size="small">Delete</Button>
 								</td>
 							</tr>
-
 						</table>
 					</div>
+					<div class="space">
+						<Page :total="paginateInfo.total" :current="paginateInfo.current_page"  :page-size="paginateInfo.per_page" @on-change="getBlogData" v-if="paginateInfo"/>
+					</div>
 				</div>
-
 				<deleteModal/>
-
 			</div>
 		</div>
     </div>
@@ -60,7 +60,8 @@ export default {
 			deleteItem: {
 				id: ''
 			},
-			deletingIndex: -1
+			deletingIndex: -1,
+			paginateInfo: null,
 		}
 	},
 	components: {
@@ -78,14 +79,18 @@ export default {
 			}
 			this.$store.commit('setDeletingModalObj', deleteModalObj)
 		},
+		async getBlogData(page = 1){
+			const res = await this.callApi('get', `app/blogsdata?page=${page}`)
+				if(res.status==200){
+					this.blogs = res.data.data
+					this.paginateInfo = res.data
+				}else{
+					this.swr()
+				}
+		}
 	},
 	async created(){
-		const res = await this.callApi('get', 'app/blogsdata')
-		if(res.status==200){
-			this.blogs = res.data
-		}else{
-			this.swr()
-		}
+		this.getBlogData()
 	},
 	computed: {
 		...mapGetters([

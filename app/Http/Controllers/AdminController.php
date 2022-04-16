@@ -84,7 +84,7 @@ class AdminController extends Controller
     }
 
     public function getTags(){
-        return Tag::orderBy('id', 'desc')->get();
+        return Tag::orderBy('id', 'desc')->paginate(10);
     }
     public function upload(Request $request){
         $this->validate($request,[
@@ -130,7 +130,7 @@ class AdminController extends Controller
         ]);
     }
     public function getCategory(){
-        return Category::orderBy('id', 'desc')->get();
+        return Category::orderBy('id', 'desc')->paginate(10);
     }
     public function editCategory(Request $request){
         $this->validate($request,[
@@ -177,7 +177,7 @@ class AdminController extends Controller
     }
     public function getUser(){
         //where user type not equal user
-        return User::orderBy('id', 'desc')->get();
+        return User::orderBy('id', 'desc')->paginate(10);
     }
     public function editUser(Request $request){
         //validate request
@@ -312,7 +312,7 @@ class AdminController extends Controller
         return $newCount > 0 ? "$slug-$newCount" : $slug;
     } 
     public function blogData(){
-        return Blog::with(['categories' , 'tags'])->orderBy('id', 'desc')->get();
+        return Blog::with(['categories' , 'tags'])->orderBy('id', 'desc')->paginate(10);
     }
     public function deleteBlog(Request $request){
         $this->validate($request,[

@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="{{ mix('css/all.css') }}" rel="stylesheet">
 
-        <title>Laravel</title>
+        <title>Blog - Admin Panel</title>
 
         <script>
             (function(){

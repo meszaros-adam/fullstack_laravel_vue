@@ -31,8 +31,10 @@
 									<Button @click="showDeleteModal(user, i)" type="error" size="small" :loading="isDeleting" v-if="isDeletePermitted">Delete</Button>
 								</td>
 							</tr>
-
 						</table>
+					</div>
+					<div class="space">
+						<Page :total="paginateInfo.total" :current="paginateInfo.current_page"  :page-size="paginateInfo.per_page" @on-change="getUsers" v-if="paginateInfo"/>
 					</div>
 				</div>
 
@@ -127,7 +129,9 @@ export default {
 			deleteItem: {
 				id: ''
 			},
-			deletingIndex: -1
+			deletingIndex: -1,
+			paginateInfo: null,
+
 		}
 	},
 	components: {
@@ -207,22 +211,21 @@ export default {
 			}
 			this.$store.commit('setDeletingModalObj', deleteModalObj)
 		},
+		async getUsers(page=1){
+			const res = await this.callApi('get', `app/get_users?page=${page}`)
+			if(res.status==200){
+			this.users = res.data.data
+			this.paginateInfo = res.data
+			}else{
+				this.swr()
+			}
+		}
 	},
 	async created(){
-
-		const [res, resRole] = await Promise.all([
-			this.callApi('get', 'app/get_users'),
-			this.callApi('get', 'app/get_roles'),
-		])
-
+		this.getUsers()
+		const res = await this.callApi('get', 'app/get_roles')
 		if(res.status==200){
-			this.users = res.data
-		}else{
-			this.swr()
-		}
-
-		if(res.status==200){
-			this.roles = resRole.data
+			this.roles = res.data
 		}else{
 			this.swr()
 		}

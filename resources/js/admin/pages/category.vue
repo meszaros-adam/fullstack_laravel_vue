@@ -31,8 +31,10 @@
 									<Button @click="showDeleteModal(category, i)" type="error" size="small" v-if="isDeletePermitted">Delete</Button>
 								</td>
 							</tr>
-
 						</table>
+					</div>
+					<div class="space">
+						<Page :total="paginateInfo.total" :current="paginateInfo.current_page"  :page-size="paginateInfo.per_page" @on-change="getCategories" v-if="paginateInfo"/>
 					</div>
 				</div>
 
@@ -151,6 +153,7 @@ export default {
 			isEditing: false,
 			//for HandleSucess function.
 			isEditingItem: false,
+			paginateInfo: null,
 		}
 	},
 	components: {
@@ -287,14 +290,18 @@ export default {
 			}
 			this.$store.commit('setDeletingModalObj', deleteModalObj)
 		},
+		async getCategories(page=1){
+			const res = await this.callApi('get', `app/get_category?page=${page}`)
+			if(res.status==200){
+				this.categoryList = res.data.data
+				this.paginateInfo = res.data
+			}else{
+				this.swr()
+			}
+		},
 	},
 	async created(){
-		const res = await this.callApi('get', 'app/get_category')
-		if(res.status==200){
-			this.categoryList = res.data
-		}else{
-			this.swr()
-		}
+		this.getCategories()
 		this.token=	window.Laravel.csrfToken
 	},
 	computed: {

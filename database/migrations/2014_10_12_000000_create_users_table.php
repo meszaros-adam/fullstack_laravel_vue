@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->unsignedBigInteger('role_id');
+            $table->string('profilePic')->default('uploads/pic.png');
             $table->boolean('isActivated')->default(0);
             $table->string('passwordResetCode')->nullable();
             $table->string('activationCode')->nullable();
