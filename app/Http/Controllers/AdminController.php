@@ -83,7 +83,7 @@ class AdminController extends Controller
         return Tag::where('id', $request->id)->delete();
     }
 
-    public function getTags(){
+    public function getTags(Request $request){
         return Tag::orderBy('id', 'desc')->paginate(10);
     }
     public function upload(Request $request){

@@ -138,13 +138,13 @@ export default {
         this.callApi('get', 'app/get_tags'),
       ])
       if (cat.status == 200  ) {
-      this.categoryList = cat.data;
+      this.categoryList = cat.data.data;
       }
       else {
         this.swr();
       }
       if(tag.status == 200 ){
-        this.tags = tag.data;
+        this.tags = tag.data.data;
       }else {
         this.swr();
       }
